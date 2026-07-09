@@ -1,0 +1,66 @@
+<section class="px-6 py-20">
+  <div class="max-w-6xl mx-auto text-center mb-16">
+    <h2 class="text-4xl md:text-5xl font-bold mb-4">
+      Inicia el Blindaje de tu Negocio
+    </h2>
+    <p class="text-brand-text-muted text-lg max-w-xl mx-auto">
+      Responde 4 preguntas rápidas para evaluar la viabilidad técnica de tu
+      proyecto.
+    </p>
+  </div>
+
+  <div class="max-w-4xl mx-auto">
+    <div
+      class="bg-brand-card border border-brand-border rounded-[2.5rem] p-8 md:p-16 relative shadow-2xl"
+    >
+      <div class="flex items-center gap-4 mb-12">
+        <div class="flex-1 h-1.5 bg-brand-surface rounded-full overflow-hidden">
+          <div class="h-full bg-brand-primary w-1/4"></div>
+        </div>
+        <span class="text-[12px] font-mono text-brand-text-muted"
+          >STEP_01 / 04</span
+        >
+      </div>
+
+      <h3 class="text-2xl md:text-3xl font-bold text-center mb-12">
+        ¿Cuál es el volumen de ventas o tráfico actual de tu plataforma?
+      </h3>
+
+      <div class="grid sm:grid-cols-2 gap-4">
+        {
+          [
+            { label: "Opción A", text: "0 - 100 pedidos/mes" },
+            { label: "Opción B", text: "100 - 1000 pedidos/mes" },
+            { label: "Opción C", text: "Más de 1000 pedidos/mes" },
+            { label: "Opción D", text: "Proyecto netamente nuevo" },
+          ].map((opt) => (
+            <button class="bg-brand-surface border border-brand-border p-8 rounded-3xl text-left hover:border-brand-primary hover:bg-brand-primary/5 transition-all group active:scale-95">
+              <span class="block text-[12px] font-mono text-brand-border group-hover:text-brand-primary mb-4 uppercase">
+                {opt.label}
+              </span>
+              <span class="text-lg font-bold text-brand-text-main">
+                {opt.text}
+              </span>
+            </button>
+          ))
+        }
+      </div>
+
+      <div class="mt-12 flex justify-center">
+        <button
+          class="bg-brand-primary text-brand-surface px-10 py-4 rounded-2xl font-bold flex items-center gap-2 hover:scale-105 transition-transform"
+        >
+          Siguiente Paso
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-5 h-5"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"></path></svg
+          >
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

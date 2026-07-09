@@ -1,0 +1,58 @@
+---
+const proyectos = [
+  {
+    cat: "GASTRONOMÍA / DELIVERY PREMIUM",
+    title: "Umbral PV Sushi",
+    desc: "E-commerce headless optimizado para alta demanda con validación de stock en tiempo real y flujo de pedidos automatizado directo a central telefónica.",
+    img: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=800&auto=format&fit=crop",
+  },
+  {
+    cat: "E-COMMERCE DE ALTO RENDIMIENTO",
+    title: "n4nchile",
+    desc: "Tienda online de velocidad extrema con pasarela de pagos (Flow.cl) integrada en el Edge mediante Cloudflare Workers. Arquitectura flexible con Feature Flags.",
+    img: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=800&auto=format&fit=crop",
+  },
+  {
+    cat: "EVOLUCIÓN DE ARQUITECTURA B2B",
+    title: "Endoparts",
+    desc: "Migración integral de una plataforma médica a arquitectura estática en Astro. Enfoque en la experiencia B2B de marcas, arriendos y servicios técnicos.",
+    img: "https://images.unsplash.com/photo-1516549655169-df83a0774514?q=80&w=800&auto=format&fit=crop",
+  },
+];
+---
+
+<section id="casos" class="px-6">
+  <div class="max-w-6xl mx-auto">
+    <div class="mb-16">
+      <h2
+        class="text-[12px] font-mono text-brand-primary tracking-[0.3em] uppercase mb-4"
+      >
+        Proyectos Reales
+      </h2>
+      <h3 class="text-4xl font-bold">Casos Seleccionados.</h3>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      {
+        proyectos.map((p) => (
+          <div class="group relative bg-brand-card border border-brand-border rounded-3xl overflow-hidden aspect-[3/4]">
+            <img
+              src={p.img}
+              alt={p.title}
+              class="absolute inset-0 w-full h-full object-cover opacity-20 grayscale group-hover:opacity-40 group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-brand-surface via-brand-surface/50 to-transparent p-8 flex flex-col justify-end">
+              <span class="text-[12px] font-mono text-brand-primary tracking-[0.2em] mb-2 uppercase">
+                {p.cat}
+              </span>
+              <h4 class="text-2xl font-bold mb-3">{p.title}</h4>
+              <p class="text-sm text-brand-text-muted leading-relaxed opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">
+                {p.desc}
+              </p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

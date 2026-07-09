@@ -1,0 +1,24 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import Hero from "../components/Hero.astro";
+import Diagnostico from "../components/Diagnostico.astro";
+import Servicios from "../components/Servicios.astro";
+import Casos from "../components/Casos.astro";
+import Formulario from "../components/Formulario.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<Layout title="Caparazón Estudios | Ingeniería Web de Élite">
+  <main class="bg-brand-surface text-brand-text-main font-sans selection:bg-brand-primary/30">
+    <Navbar />
+    <Hero />
+    <div class="space-y-32 pb-32">
+      <Diagnostico />
+      <Servicios />
+      <Casos />
+      <Formulario />
+    </div>
+    <Footer />
+  </main>
+</Layout>

@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand Colors */
+  --color-brand-primary: #00C49F;
+  --color-brand-surface: #0A0E17;
+  --color-brand-card: #1E293B;
+  --color-brand-border: #334155;
+  --color-brand-text-main: #F1F5F9;
+  --color-brand-text-muted: #94A3B8;
+
+  /* Design System Tokens */
+  --color-primary: var(--color-brand-primary);
+  --color-background: var(--color-brand-surface);
+  --color-surface: var(--color-brand-card);
+  --color-outline: var(--color-brand-border);
+
+  /* Typography */
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Custom Transitions */
+  --transition-premium: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--color-brand-surface);
+    color: var(--color-brand-text-main);
+    font-family: var(--font-sans);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  ::selection {
+    background-color: rgba(0, 196, 159, 0.3);
+    color: #ffffff;
+  }
+}
+
+@layer utilities {
+  .text-glow-emerald {
+    text-shadow: 0 0 20px rgba(0, 196, 159, 0.4);
+  }
+
+  .border-premium {
+    border: 1px solid var(--color-brand-border);
+  }
+
+  .backdrop-premium {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+}
