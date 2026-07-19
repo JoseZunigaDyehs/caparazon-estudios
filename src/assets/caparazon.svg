@@ -1,9 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 140" fill="none">
-  <polygon points="60,2 118,36 118,104 60,138 2,104 2,36" stroke="var(--color-brand-card)" stroke-width="2"/>
-  <polygon points="60,8 112,38 112,102 60,132 8,102 8,38" stroke="var(--color-brand-border)" stroke-width="2.5"/>
-  <path d="M 101,57 L 101,44 L 60,20 L 19,44 L 19,96 L 60,120 L 101,96 L 101,83"
-        stroke="var(--color-brand-primary)"
-        stroke-width="8"
-        stroke-linejoin="round"
-        stroke-linecap="round"/>
+<svg width="282" height="319" viewBox="0 0 282 319" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M258.75 0H22.5C10.0736 0 0 11.4167 0 25.5V293.25C0 307.333 10.0736 318.75 22.5 318.75H258.75C271.176 318.75 281.25 307.333 281.25 293.25V25.5C281.25 11.4167 271.176 0 258.75 0Z" fill="#0A0E17"/>
+<path d="M140.625 24.375L253.125 91.875V226.875L140.625 294.375L28.1251 226.875V91.875L140.625 24.375Z" stroke="#1E293B" stroke-width="10"/>
+<path d="M140.625 43.125L238.125 99.375V219.375L140.625 275.625L43.1251 219.375V99.375L140.625 43.125Z" stroke="#334155" stroke-width="6"/>
+<path d="M208.125 137.925V116.475L140.625 76.875L73.1251 116.475V202.275L140.625 241.875L208.125 202.275V180.825" stroke="#00C49F" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
