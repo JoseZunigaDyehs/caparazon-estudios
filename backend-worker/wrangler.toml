@@ -1,0 +1,41 @@
+# Configuración de Cloudflare Worker para Caparazón Estudios
+# Documentación: https://developers.cloudflare.com/workers/wrangler/configuration/
+
+name = "caparazon-estudios-worker"
+main = "index.js"
+compatibility_date = "2026-07-19"
+compatibility_flags = ["nodejs_compat"]
+
+# Variables públicas (no secretos). Puedes sobreescribirlas por entorno más abajo.
+[vars]
+NOTIFY_EMAIL = "caparazonestudios@gmail.com"
+ALLOWED_ORIGINS = "https://caparazonestudios.com,https://www.caparazonestudios.com"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Entorno de producción
+# ─────────────────────────────────────────────────────────────────────────────
+[env.production]
+name = "caparazon-estudios-worker"
+[env.production.vars]
+# NOTIFY_EMAIL = "caparazonestudios@gmail.com"
+# ALLOWED_ORIGINS = "https://caparazonestudios.com,https://www.caparazonestudios.com"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Entorno de desarrollo (staging)
+# ─────────────────────────────────────────────────────────────────────────────
+[env.staging]
+name = "caparazon-estudios-worker-staging"
+[env.staging.vars]
+# NOTIFY_EMAIL = "tu-correo@gmail.com"
+# ALLOWED_ORIGINS = "http://localhost:4321,https://localhost:4321"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Secretos (NO commitear nunca aquí)
+# ─────────────────────────────────────────────────────────────────────────────
+# Ejecuta en terminal:
+#   wrangler secret put RESEND_API_KEY
+#   wrangler secret put RESEND_API_KEY --env production
+#   wrangler secret put RESEND_API_KEY --env staging
+#
+# También puedes configurarlos desde el dashboard de Cloudflare:
+#   Workers & Pages > Tu worker > Settings > Variables and Secrets
