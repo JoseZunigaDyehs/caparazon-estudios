@@ -9,28 +9,28 @@
 // Configuración
 // ─────────────────────────────────────────────────────────────────────────────
 
-const ENDPOINT = '/api/cotizar';
-const RESEND_API_URL = 'https://api.resend.com/emails';
+const ENDPOINT = "/api/cotizar";
+const RESEND_API_URL = "https://api.resend.com/emails";
 
 const BRAND = {
-  name: 'Caparazón Estudios',
-  bg: '#0A0E17',
-  surface: '#1E293B',
-  border: '#334155',
-  primary: '#00C49F',
-  text: '#F1F5F9',
-  muted: '#94A3B8',
+  name: "Caparazón Estudios",
+  bg: "#0A0E17",
+  surface: "#1E293B",
+  border: "#334155",
+  primary: "#00C49F",
+  text: "#F1F5F9",
+  muted: "#94A3B8",
 };
 
 const REQUIRED_FIELDS = [
-  'objetivo',
-  'estadoData',
-  'urgencia',
-  'inversion',
-  'nombre',
-  'negocio',
-  'whatsapp',
-  'correo',
+  "objetivo",
+  "estadoData",
+  "urgencia",
+  "inversion",
+  "nombre",
+  "negocio",
+  "whatsapp",
+  "correo",
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -43,23 +43,23 @@ export default {
       const url = new URL(request.url);
 
       if (url.pathname !== ENDPOINT) {
-        return jsonResponse({ error: 'Ruta no encontrada.' }, 404);
+        return jsonResponse({ error: "Ruta no encontrada." }, 404);
       }
 
-      if (request.method === 'OPTIONS') {
+      if (request.method === "OPTIONS") {
         return handleCors(request, env);
       }
 
-      if (request.method !== 'POST') {
-        return jsonResponse({ error: 'Método no permitido.' }, 405, {
-          'Allow': 'POST, OPTIONS',
+      if (request.method !== "POST") {
+        return jsonResponse({ error: "Método no permitido." }, 405, {
+          Allow: "POST, OPTIONS",
         });
       }
 
       return await handleQuote(request, env);
     } catch (err) {
-      console.error('Worker error:', err);
-      return jsonResponse({ error: 'Error interno del servidor.' }, 500);
+      console.error("Worker error:", err);
+      return jsonResponse({ error: "Error interno del servidor." }, 500);
     }
   },
 };
@@ -69,32 +69,35 @@ export default {
 // ─────────────────────────────────────────────────────────────────────────────
 
 function handleCors(request, env) {
-  const origin = request.headers.get('Origin') || '';
+  const origin = request.headers.get("Origin") || "";
   const allowedOrigin = getAllowedOrigin(origin, env);
 
   return new Response(null, {
     status: 204,
     headers: {
-      'Access-Control-Allow-Origin': allowedOrigin,
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      'Access-Control-Max-Age': '86400',
+      "Access-Control-Allow-Origin": allowedOrigin,
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      "Access-Control-Max-Age": "86400",
     },
   });
 }
 
 function corsHeaders(origin, env) {
   return {
-    'Access-Control-Allow-Origin': getAllowedOrigin(origin, env),
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    "Access-Control-Allow-Origin": getAllowedOrigin(origin, env),
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
   };
 }
 
 function getAllowedOrigin(origin, env) {
-  const fallback = 'http://localhost:4321';
+  const fallback = "http://localhost:4321";
   const raw = env.ALLOWED_ORIGINS || fallback;
-  const allowed = raw.split(',').map((o) => o.trim()).filter(Boolean);
+  const allowed = raw
+    .split(",")
+    .map((o) => o.trim())
+    .filter(Boolean);
 
   if (allowed.includes(origin)) {
     return origin;
@@ -112,7 +115,7 @@ function getAllowedOrigin(origin, env) {
 function isLocalhost(origin) {
   try {
     const url = new URL(origin);
-    return url.hostname === 'localhost' || url.hostname === '127.0.0.1';
+    return url.hostname === "localhost" || url.hostname === "127.0.0.1";
   } catch {
     return false;
   }
@@ -123,23 +126,27 @@ function isLocalhost(origin) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 async function handleQuote(request, env) {
-  const origin = request.headers.get('Origin') || '';
+  const origin = request.headers.get("Origin") || "";
   const cors = corsHeaders(origin, env);
 
   if (!isAllowedOrigin(origin, env)) {
-    return jsonResponse({ error: 'Origen no autorizado.' }, 403);
+    return jsonResponse({ error: "Origen no autorizado." }, 403);
   }
 
-  const contentType = request.headers.get('Content-Type') || '';
-  if (!contentType.includes('application/json')) {
-    return jsonResponse({ error: 'Se espera Content-Type: application/json.' }, 415, cors);
+  const contentType = request.headers.get("Content-Type") || "";
+  if (!contentType.includes("application/json")) {
+    return jsonResponse(
+      { error: "Se espera Content-Type: application/json." },
+      415,
+      cors,
+    );
   }
 
   let payload;
   try {
     payload = await request.json();
   } catch {
-    return jsonResponse({ error: 'JSON inválido.' }, 400, cors);
+    return jsonResponse({ error: "JSON inválido." }, 400, cors);
   }
 
   const validation = validatePayload(payload);
@@ -148,20 +155,20 @@ async function handleQuote(request, env) {
   }
 
   const sanitized = sanitizePayload(payload);
-  const destination = env.NOTIFY_EMAIL || 'hola@caparazonestudios.com';
+  const destination = env.NOTIFY_EMAIL || "hola@caparazonestudios.com";
 
   const resendResult = await sendEmailWithResend(sanitized, destination, env);
   if (!resendResult.ok) {
-    console.error('Resend error:', resendResult.error);
+    console.error("Resend error:", resendResult.error);
     return jsonResponse(
-      { error: 'No se pudo enviar el correo. Inténtalo más tarde.' },
+      { error: "No se pudo enviar el correo. Inténtalo más tarde." },
       502,
       cors,
     );
   }
 
   return jsonResponse(
-    { success: true, message: 'Cotización enviada correctamente.' },
+    { success: true, message: "Cotización enviada correctamente." },
     200,
     cors,
   );
@@ -172,24 +179,30 @@ async function handleQuote(request, env) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 function validatePayload(payload) {
-  if (!payload || typeof payload !== 'object') {
-    return { ok: false, error: 'El cuerpo de la petición debe ser un objeto JSON.' };
+  if (!payload || typeof payload !== "object") {
+    return {
+      ok: false,
+      error: "El cuerpo de la petición debe ser un objeto JSON.",
+    };
   }
 
   const missing = REQUIRED_FIELDS.filter((field) => {
     const value = payload[field];
-    return value === undefined || value === null || String(value).trim() === '';
+    return value === undefined || value === null || String(value).trim() === "";
   });
 
   if (missing.length > 0) {
     return {
       ok: false,
-      error: `Campos obligatorios faltantes: ${missing.join(', ')}.`,
+      error: `Campos obligatorios faltantes: ${missing.join(", ")}.`,
     };
   }
 
   if (!isValidEmail(payload.correo)) {
-    return { ok: false, error: 'El correo electrónico no tiene un formato válido.' };
+    return {
+      ok: false,
+      error: "El correo electrónico no tiene un formato válido.",
+    };
   }
 
   return { ok: true };
@@ -205,8 +218,11 @@ function isAllowedOrigin(origin, env) {
     return true;
   }
 
-  const raw = env.ALLOWED_ORIGINS || '';
-  const allowed = raw.split(',').map((o) => o.trim()).filter(Boolean);
+  const raw = env.ALLOWED_ORIGINS || "";
+  const allowed = raw
+    .split(",")
+    .map((o) => o.trim())
+    .filter(Boolean);
   return allowed.includes(origin);
 }
 
@@ -224,7 +240,7 @@ function sanitizePayload(payload) {
     negocio: String(payload.negocio).trim(),
     whatsapp: String(payload.whatsapp).trim(),
     correo: String(payload.correo).trim().toLowerCase(),
-    mensaje: payload.mensaje ? String(payload.mensaje).trim() : '',
+    mensaje: payload.mensaje ? String(payload.mensaje).trim() : "",
   };
 }
 
@@ -237,7 +253,7 @@ async function sendEmailWithResend(data, destination, env) {
   if (!apiKey) {
     return {
       ok: false,
-      error: 'RESEND_API_KEY no está configurada en el entorno.',
+      error: "RESEND_API_KEY no está configurada en el entorno.",
     };
   }
 
@@ -248,10 +264,10 @@ async function sendEmailWithResend(data, destination, env) {
 
   try {
     const response = await fetch(RESEND_API_URL, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         from: `${BRAND.name} <noreply@caparazonestudios.com>`,
@@ -273,7 +289,10 @@ async function sendEmailWithResend(data, destination, env) {
     const result = await response.json();
     return { ok: true, data: result };
   } catch (err) {
-    return { ok: false, error: err.message || 'Error de red al contactar Resend.' };
+    return {
+      ok: false,
+      error: err.message || "Error de red al contactar Resend.",
+    };
   }
 }
 
@@ -283,10 +302,10 @@ async function sendEmailWithResend(data, destination, env) {
 
 function buildEmailHtml(data) {
   const rows = [
-    { label: 'Tipo de proyecto', value: data.objetivo },
-    { label: 'Estado de la información', value: data.estadoData },
-    { label: 'Plazos', value: data.urgencia },
-    { label: 'Rango de presupuesto', value: data.inversion },
+    { label: "Tipo de proyecto", value: data.objetivo },
+    { label: "Estado de la información", value: data.estadoData },
+    { label: "Plazos", value: data.urgencia },
+    { label: "Rango de presupuesto", value: data.inversion },
   ];
 
   const quoteRows = rows
@@ -306,7 +325,7 @@ function buildEmailHtml(data) {
       </tr>
     `,
     )
-    .join('');
+    .join("");
 
   return `
 <!DOCTYPE html>
@@ -407,7 +426,7 @@ function buildEmailHtml(data) {
             </td>
           </tr>
           `
-              : ''
+              : ""
           }
 
           <!-- Footer -->
@@ -436,22 +455,22 @@ function buildEmailHtml(data) {
 
 function escapeHtml(text) {
   return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
 function cleanPhone(number) {
-  return number.replace(/[^\d+]/g, '');
+  return number.replace(/[^\d+]/g, "");
 }
 
 function jsonResponse(body, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(body), {
     status,
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       ...extraHeaders,
     },
   });

@@ -1,4 +1,4 @@
-<section class="px-6 py-20">
+<section class="px-6 py-20" id="cotizar">
   <div class="max-w-6xl mx-auto text-center mb-16">
     <h2 class="text-4xl md:text-5xl font-bold mb-4">
       Inicia el Blindaje de tu Negocio
@@ -12,55 +12,573 @@
   <div class="max-w-4xl mx-auto">
     <div
       class="bg-brand-card border border-brand-border rounded-[2.5rem] p-8 md:p-16 relative shadow-2xl"
+      id="formulario-cotizacion"
     >
-      <div class="flex items-center gap-4 mb-12">
-        <div class="flex-1 h-1.5 bg-brand-surface rounded-full overflow-hidden">
-          <div class="h-full bg-brand-primary w-1/4"></div>
+      <!-- Header con progreso -->
+      <div id="wizard-header">
+        <div class="flex items-center gap-4 mb-12">
+          <div class="flex-1 h-1.5 bg-brand-surface rounded-full overflow-hidden">
+            <div
+              class="h-full bg-brand-primary transition-all duration-300"
+              id="progress-bar"
+              style="width: 20%"
+            ></div>
+          </div>
+          <span
+            class="text-[12px] font-mono text-brand-text-muted"
+            id="step-counter">STEP_01 / 05</span
+          >
         </div>
-        <span class="text-[12px] font-mono text-brand-text-muted"
-          >STEP_01 / 04</span
+
+        <h3
+          class="text-2xl md:text-3xl font-bold text-center mb-12"
+          id="step-title"
         >
+          ¿Cuál es el objetivo principal de tu proyecto?
+        </h3>
       </div>
 
-      <h3 class="text-2xl md:text-3xl font-bold text-center mb-12">
-        ¿Cuál es el volumen de ventas o tráfico actual de tu plataforma?
-      </h3>
+      <!-- Contenido dinámico de los pasos -->
+      <div id="step-content" class="min-h-[280px]" aria-live="polite"></div>
 
-      <div class="grid sm:grid-cols-2 gap-4">
-        {
-          [
-            { label: "Opción A", text: "0 - 100 pedidos/mes" },
-            { label: "Opción B", text: "100 - 1000 pedidos/mes" },
-            { label: "Opción C", text: "Más de 1000 pedidos/mes" },
-            { label: "Opción D", text: "Proyecto netamente nuevo" },
-          ].map((opt) => (
-            <button class="bg-brand-surface border border-brand-border p-8 rounded-3xl text-left hover:border-brand-primary hover:bg-brand-primary/5 transition-all group active:scale-95">
-              <span class="block text-[12px] font-mono text-brand-border group-hover:text-brand-primary mb-4 uppercase">
-                {opt.label}
-              </span>
-              <span class="text-lg font-bold text-brand-text-main">
-                {opt.text}
-              </span>
-            </button>
-          ))
-        }
-      </div>
+      <!-- Mensaje de error general -->
+      <div
+        id="error-general"
+        class="hidden mt-6 p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-400 text-center text-sm"
+      ></div>
 
-      <div class="mt-12 flex justify-center">
+      <!-- Navegación -->
+      <div
+        class="mt-12 flex flex-col sm:flex-row justify-center gap-4"
+        id="wizard-nav"
+      >
         <button
-          class="bg-brand-primary text-brand-surface px-10 py-4 rounded-2xl font-bold flex items-center gap-2 hover:scale-105 transition-transform"
+          type="button"
+          id="btn-anterior"
+          class="hidden bg-brand-surface border border-brand-border text-brand-text-main px-10 py-4 rounded-2xl font-bold hover:border-brand-primary transition-colors"
         >
-          Siguiente Paso
+          Anterior
+        </button>
+        <button
+          type="button"
+          id="btn-siguiente"
+          class="bg-brand-primary text-brand-surface px-10 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <span id="btn-siguiente-texto">Siguiente Paso</span>
           <svg
+            id="btn-siguiente-icono"
             xmlns="http://www.w3.org/2000/svg"
             class="w-5 h-5"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"></path></svg
+            stroke-width="2.5"
+            ><path d="M5 12h14M12 5l7 7-7 7"></path></svg
           >
+        </button>
+      </div>
+
+      <!-- Estado de éxito -->
+      <div id="success-state" class="hidden text-center py-12">
+        <div
+          class="w-20 h-20 bg-brand-primary/10 rounded-full flex items-center justify-center mx-auto mb-6"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-10 h-10 text-brand-primary"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path d="M20 6L9 17l-5-5"></path>
+          </svg>
+        </div>
+        <h3 class="text-3xl font-bold mb-4">¡Cotización enviada!</h3>
+        <p class="text-brand-text-muted mb-8 max-w-md mx-auto">
+          Revisaremos tu proyecto y te contactaremos por WhatsApp o correo en
+          las próximas 24 horas hábiles.
+        </p>
+        <button
+          type="button"
+          id="btn-nueva-cotizacion"
+          class="bg-brand-primary text-brand-surface px-10 py-4 rounded-2xl font-bold hover:scale-105 transition-transform"
+        >
+          Enviar otra cotización
         </button>
       </div>
     </div>
   </div>
 </section>
+
+<script>
+  const pasosFormulario = [
+    {
+      id: "objetivo",
+      pregunta: "¿Cuál es el objetivo principal de tu proyecto?",
+      opciones: [
+        {
+          label: "Crear mi primera tienda online (E-commerce)",
+          value: "Primera Tienda (E-commerce)",
+        },
+        {
+          label: "Migrar/Acelerar mi tienda actual (Ya vendo, pero es lenta)",
+          value: "Migración/Aceleración",
+        },
+        {
+          label: "Catálogo digital / Sitio corporativo de alta gama",
+          value: "Catálogo B2B / Corporativo",
+        },
+        { label: "Desarrollo a la medida", value: "A la Medida" },
+      ],
+    },
+    {
+      id: "estadoData",
+      pregunta: "¿Cuál es el estado actual de la información de tu negocio?",
+      opciones: [
+        {
+          label: "Tengo todo listo: Fotos profesionales, textos y productos",
+          value: "Todo Listo",
+        },
+        {
+          label:
+            "Tengo la base, pero necesito ayuda para organizar el contenido",
+          value: "Necesita Ayuda con Data",
+        },
+        {
+          label: "No tengo nada todavía, estoy partiendo desde cero",
+          value: "Desde Cero (Sin Data)",
+        },
+      ],
+    },
+    {
+      id: "urgencia",
+      pregunta: "¿Para cuándo necesitas tener la plataforma online?",
+      opciones: [
+        { label: "¡Para ayer! (Urgente)", value: "Urgente" },
+        {
+          label: "En los próximos 30 a 45 días (Plazo ideal)",
+          value: "30-45 días",
+        },
+        {
+          label: "No tengo prisa, busco calidad ante todo",
+          value: "Sin Prisa / Calidad",
+        },
+      ],
+    },
+    {
+      id: "inversion",
+      pregunta:
+        "¿Qué rango de inversión tienes proyectado para este desarrollo?",
+      opciones: [
+        { label: "Menos de $500.000 CLP", value: "Bajo (<500k)" },
+        {
+          label: "Entre $600.000 y $1.000.000 CLP",
+          value: "Plan Catálogo (600k-1M)",
+        },
+        {
+          label: "Entre $1.200.000 y $2.000.000 CLP",
+          value: "Plan Headless (1.2M-2M)",
+        },
+        { label: "Más de $2.000.000 CLP", value: "Corporativo (>2M)" },
+      ],
+    },
+  ];
+
+  const API_URL = `${import.meta.env.PUBLIC_WORKER_API || ""}/api/cotizar`;
+
+  if (!import.meta.env.PUBLIC_WORKER_API) {
+    console.warn("Formulario de cotización: PUBLIC_WORKER_API no está definida.");
+  }
+
+  const estadoInicial = {
+    pasoActual: 0,
+    respuestas: {
+      objetivo: "",
+      estadoData: "",
+      urgencia: "",
+      inversion: "",
+    },
+    contacto: {
+      nombre: "",
+      negocio: "",
+      whatsapp: "",
+      correo: "",
+    },
+    enviando: false,
+  };
+
+  let estado = structuredClone(estadoInicial);
+
+  // Referencias DOM
+  const progressBar = document.getElementById("progress-bar");
+  const stepCounter = document.getElementById("step-counter");
+  const stepTitle = document.getElementById("step-title");
+  const stepContent = document.getElementById("step-content");
+  const btnAnterior = document.getElementById("btn-anterior");
+  const btnSiguiente = document.getElementById("btn-siguiente");
+  const btnSiguienteTexto = document.getElementById("btn-siguiente-texto");
+  const btnSiguienteIcono = document.getElementById("btn-siguiente-icono");
+  const errorGeneral = document.getElementById("error-general");
+  const wizardHeader = document.getElementById("wizard-header");
+  const wizardNav = document.getElementById("wizard-nav");
+  const successState = document.getElementById("success-state");
+  const btnNuevaCotizacion = document.getElementById("btn-nueva-cotizacion");
+
+  function renderizarPaso() {
+    limpiarErrorGeneral();
+
+    if (estado.pasoActual < 4) {
+      renderizarPasoPregunta();
+    } else {
+      renderizarPasoContacto();
+    }
+
+    actualizarProgreso();
+    actualizarNavegacion();
+  }
+
+  function renderizarPasoPregunta() {
+    const paso = pasosFormulario[estado.pasoActual];
+    stepTitle.textContent = paso.pregunta;
+
+    const seleccionada = estado.respuestas[paso.id];
+
+    stepContent.innerHTML = `
+      <div class="grid sm:grid-cols-2 gap-4" role="group" aria-label="${escapeHtml(paso.pregunta)}">
+        ${paso.opciones
+          .map(
+            (opt) => `
+          <button
+            type="button"
+            data-value="${escapeHtml(opt.value)}"
+            class="opcion-pregunta bg-brand-surface border p-8 rounded-3xl text-left transition-all group active:scale-95 ${
+              seleccionada === opt.value
+                ? "border-brand-primary bg-brand-primary/10"
+                : "border-brand-border hover:border-brand-primary hover:bg-brand-primary/5"
+            }"
+            aria-pressed="${seleccionada === opt.value}"
+          >
+            <span class="block text-lg font-bold ${seleccionada === opt.value ? "text-brand-primary" : "text-brand-text-main group-hover:text-brand-primary"} transition-colors">
+              ${escapeHtml(opt.label)}
+            </span>
+          </button>
+        `,
+          )
+          .join("")}
+      </div>
+      <div id="error-paso" class="hidden mt-4 text-center text-sm text-red-400"></div>
+    `;
+
+    stepContent
+      .querySelectorAll(".opcion-pregunta")
+      .forEach((btn) => {
+        btn.addEventListener("click", () => {
+          estado.respuestas[paso.id] = btn.dataset.value;
+          renderizarPaso();
+          limpiarErrorPaso();
+        });
+      });
+  }
+
+  function renderizarPasoContacto() {
+    stepTitle.textContent = "Datos de contacto";
+
+    stepContent.innerHTML = `
+      <form id="form-contacto" class="grid sm:grid-cols-2 gap-6" novalidate>
+        <div class="flex flex-col gap-2">
+          <label for="nombre" class="text-[12px] font-mono text-brand-text-muted uppercase tracking-wider">Nombre</label>
+          <input
+            type="text"
+            id="nombre"
+            name="nombre"
+            value="${escapeHtml(estado.contacto.nombre)}"
+            placeholder="Tu nombre"
+            class="bg-brand-surface border border-brand-border rounded-2xl px-5 py-4 text-brand-text-main placeholder:text-brand-text-muted/50 focus:outline-none focus:border-brand-primary transition-colors"
+            required
+          />
+          <p class="error-campo hidden text-sm text-red-400"></p>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label for="negocio" class="text-[12px] font-mono text-brand-text-muted uppercase tracking-wider">Negocio</label>
+          <input
+            type="text"
+            id="negocio"
+            name="negocio"
+            value="${escapeHtml(estado.contacto.negocio)}"
+            placeholder="Nombre de tu negocio"
+            class="bg-brand-surface border border-brand-border rounded-2xl px-5 py-4 text-brand-text-main placeholder:text-brand-text-muted/50 focus:outline-none focus:border-brand-primary transition-colors"
+            required
+          />
+          <p class="error-campo hidden text-sm text-red-400"></p>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label for="whatsapp" class="text-[12px] font-mono text-brand-text-muted uppercase tracking-wider">WhatsApp</label>
+          <input
+            type="tel"
+            id="whatsapp"
+            name="whatsapp"
+            value="${escapeHtml(estado.contacto.whatsapp)}"
+            placeholder="+56 9 1234 5678"
+            class="bg-brand-surface border border-brand-border rounded-2xl px-5 py-4 text-brand-text-main placeholder:text-brand-text-muted/50 focus:outline-none focus:border-brand-primary transition-colors"
+            required
+          />
+          <p class="error-campo hidden text-sm text-red-400"></p>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label for="correo" class="text-[12px] font-mono text-brand-text-muted uppercase tracking-wider">Correo</label>
+          <input
+            type="email"
+            id="correo"
+            name="correo"
+            value="${escapeHtml(estado.contacto.correo)}"
+            placeholder="hola@tunegocio.cl"
+            class="bg-brand-surface border border-brand-border rounded-2xl px-5 py-4 text-brand-text-main placeholder:text-brand-text-muted/50 focus:outline-none focus:border-brand-primary transition-colors"
+            required
+          />
+          <p class="error-campo hidden text-sm text-red-400"></p>
+        </div>
+      </form>
+    `;
+
+    const formContacto = document.getElementById("form-contacto");
+    formContacto.addEventListener("input", (e) => {
+      const target = e.target;
+      if (target.name in estado.contacto) {
+        estado.contacto[target.name] = target.value;
+      }
+      limpiarErrorCampo(target);
+    });
+  }
+
+  function actualizarProgreso() {
+    const porcentaje = ((estado.pasoActual + 1) / 5) * 100;
+    progressBar.style.width = `${porcentaje}%`;
+    stepCounter.textContent = `STEP_0${estado.pasoActual + 1} / 05`;
+  }
+
+  function actualizarNavegacion() {
+    btnAnterior.classList.toggle("hidden", estado.pasoActual === 0);
+
+    if (estado.pasoActual === 4) {
+      btnSiguienteTexto.textContent = estado.enviando
+        ? "Enviando..."
+        : "Enviar cotización";
+      btnSiguienteIcono.classList.add("hidden");
+    } else {
+      btnSiguienteTexto.textContent = "Siguiente Paso";
+      btnSiguienteIcono.classList.remove("hidden");
+    }
+
+    btnSiguiente.disabled = estado.enviando;
+  }
+
+  function validarPasoActual() {
+    if (estado.pasoActual < 4) {
+      const paso = pasosFormulario[estado.pasoActual];
+      if (!estado.respuestas[paso.id]) {
+        mostrarErrorPaso("Selecciona una opción para continuar.");
+        return false;
+      }
+      return true;
+    }
+
+    return validarContacto();
+  }
+
+  function validarContacto() {
+    const campos = [
+      { id: "nombre", nombre: "Nombre" },
+      { id: "negocio", nombre: "Negocio" },
+      { id: "whatsapp", nombre: "WhatsApp" },
+      { id: "correo", nombre: "Correo" },
+    ];
+
+    let valido = true;
+
+    campos.forEach((campo) => {
+      const input = document.getElementById(campo.id);
+      const valor = input.value.trim();
+      const contenedor = input.closest("div");
+      const errorEl = contenedor.querySelector(".error-campo");
+
+      if (!valor) {
+        mostrarErrorCampo(input, errorEl, `${campo.nombre} es obligatorio.`);
+        valido = false;
+        return;
+      }
+
+      if (campo.id === "correo" && !esCorreoValido(valor)) {
+        mostrarErrorCampo(input, errorEl, "Ingresa un correo válido.");
+        valido = false;
+        return;
+      }
+
+      if (campo.id === "whatsapp" && !esWhatsAppValido(valor)) {
+        mostrarErrorCampo(
+          input,
+          errorEl,
+          "Ingresa un número de WhatsApp válido."
+        );
+        valido = false;
+        return;
+      }
+
+      limpiarErrorCampo(input);
+    });
+
+    return valido;
+  }
+
+  function esCorreoValido(correo) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo);
+  }
+
+  function esWhatsAppValido(numero) {
+    const limpio = numero.replace(/[^\d+]/g, "");
+    return limpio.length >= 8;
+  }
+
+  function mostrarErrorPaso(mensaje) {
+    const errorPaso = document.getElementById("error-paso");
+    if (errorPaso) {
+      errorPaso.textContent = mensaje;
+      errorPaso.classList.remove("hidden");
+    }
+  }
+
+  function limpiarErrorPaso() {
+    const errorPaso = document.getElementById("error-paso");
+    if (errorPaso) {
+      errorPaso.textContent = "";
+      errorPaso.classList.add("hidden");
+    }
+  }
+
+  function mostrarErrorCampo(input, errorEl, mensaje) {
+    input.classList.add("border-red-500", "focus:border-red-500");
+    input.classList.remove("border-brand-border", "focus:border-brand-primary");
+    errorEl.textContent = mensaje;
+    errorEl.classList.remove("hidden");
+  }
+
+  function limpiarErrorCampo(input) {
+    input.classList.remove("border-red-500", "focus:border-red-500");
+    input.classList.add("border-brand-border", "focus:border-brand-primary");
+
+    const contenedor = input.closest("div");
+    if (contenedor) {
+      const errorEl = contenedor.querySelector(".error-campo");
+      if (errorEl) {
+        errorEl.textContent = "";
+        errorEl.classList.add("hidden");
+      }
+    }
+  }
+
+  function mostrarErrorGeneral(mensaje) {
+    errorGeneral.textContent = mensaje;
+    errorGeneral.classList.remove("hidden");
+  }
+
+  function limpiarErrorGeneral() {
+    errorGeneral.textContent = "";
+    errorGeneral.classList.add("hidden");
+  }
+
+  async function avanzar() {
+    if (!validarPasoActual()) return;
+
+    if (estado.pasoActual < 4) {
+      estado.pasoActual++;
+      renderizarPaso();
+      return;
+    }
+
+    await enviarCotizacion();
+  }
+
+  function retroceder() {
+    if (estado.pasoActual > 0) {
+      estado.pasoActual--;
+      renderizarPaso();
+    }
+  }
+
+  async function enviarCotizacion() {
+    estado.enviando = true;
+    actualizarNavegacion();
+    limpiarErrorGeneral();
+
+    const payload = {
+      ...estado.respuestas,
+      ...estado.contacto,
+    };
+
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(
+          data.error || "Ocurrió un error al enviar la cotización."
+        );
+      }
+
+      mostrarExito();
+    } catch (err) {
+      estado.enviando = false;
+      actualizarNavegacion();
+      mostrarErrorGeneral(
+        err.message ||
+          "No pudimos enviar tu cotización. Inténtalo de nuevo más tarde."
+      );
+    }
+  }
+
+  function mostrarExito() {
+    wizardHeader.classList.add("hidden");
+    stepContent.classList.add("hidden");
+    wizardNav.classList.add("hidden");
+    successState.classList.remove("hidden");
+  }
+
+  function resetearFormulario() {
+    estado = structuredClone(estadoInicial);
+
+    wizardHeader.classList.remove("hidden");
+    stepContent.classList.remove("hidden");
+    wizardNav.classList.remove("hidden");
+    successState.classList.add("hidden");
+
+    renderizarPaso();
+  }
+
+  function escapeHtml(text) {
+    if (typeof text !== "string") return "";
+    return text
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  // Event listeners
+  btnSiguiente.addEventListener("click", avanzar);
+  btnAnterior.addEventListener("click", retroceder);
+  btnNuevaCotizacion.addEventListener("click", resetearFormulario);
+
+  // Inicializar
+  renderizarPaso();
+</script>
