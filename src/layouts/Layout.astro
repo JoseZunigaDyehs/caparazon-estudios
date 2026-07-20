@@ -1,23 +1,103 @@
 ---
 import "@/styles/global.css";
+import Analytics from "@/components/Analytics.astro";
+import TrackClicks from "@/components/TrackClicks.astro";
 
 interface Props {
   title: string;
+  description?: string;
+  image?: string;
+  robots?: string;
 }
 
-const { title } = Astro.props;
+const {
+  title,
+  description = "E-commerce y catálogos headless de alto rendimiento. Arquitectura web resiliente, rápida e inmune para proteger tu negocio digital.",
+  image = "/og-image.png",
+  robots = "index, follow",
+} = Astro.props;
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? "https://caparazonestudios.com");
+const imageUrl = new URL(image, Astro.site ?? "https://caparazonestudios.com");
+const siteName = "Caparazón Estudios";
+
+const GA_ID = import.meta.env.PUBLIC_GA_ID;
+const SEARCH_CONSOLE_VERIFICATION = import.meta.env.PUBLIC_SEARCH_CONSOLE_VERIFICATION;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="es-CL">
   <head>
+    <Analytics gaId={GA_ID} searchConsoleVerification={SEARCH_CONSOLE_VERIFICATION} />
+    <TrackClicks />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+    <meta name="robots" content={robots} />
+
     <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- hreflang -->
+    <link rel="alternate" hreflang="es-CL" href={canonicalUrl} />
+    <link rel="alternate" hreflang="x-default" href={canonicalUrl} />
+
+    <!-- Preconnect recursos externos -->
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
+    <link rel="dns-prefetch" href="https://images.unsplash.com" />
+    <link rel="preconnect" href="https://assets.vercel.com" crossorigin />
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
+    <link
+      rel="preconnect"
+      href="https://caparazon-estudios-worker.caparazonestudios.workers.dev"
+      crossorigin
+    />
+
+    <!-- Precargar fuentes críticas -->
+    <link
+      rel="preload"
+      href="https://assets.vercel.com/font/Geist/GeistVariableVF.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="https://assets.vercel.com/font/GeistMono/GeistMonoVariableVF.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#00C49F" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:locale" content="es_CL" />
+    <meta property="og:image" content={imageUrl} />
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
   </head>
   <body>
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-brand-primary focus:text-brand-surface focus:px-5 focus:py-3 focus:rounded-xl focus:font-bold focus:outline-none"
+    >
+      Saltar al contenido principal
+    </a>
     <slot />
   </body>
 </html>

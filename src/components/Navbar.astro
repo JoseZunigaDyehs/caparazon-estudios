@@ -2,24 +2,33 @@
 import CaparazonSvg from "../assets/caparazon.svg";
 ---
 
-<nav class="fixed top-6 left-1/2 -translate-x-1/2 w-[90%] max-w-6xl z-50">
+<nav
+  class="fixed top-6 left-1/2 -translate-x-1/2 w-[90%] max-w-6xl z-50"
+  aria-label="Navegación principal"
+>
   <div
     class="bg-brand-surface/80 backdrop-blur-md border border-brand-border rounded-2xl px-6 py-4 flex justify-between items-center shadow-2xl"
   >
-    <div class="flex items-center gap-2">
+    <a href="#inicio" class="flex items-center gap-2 group">
       <div class="w-8 h-8 rounded-lg flex items-center justify-center">
-        <CaparazonSvg class="[&_*]:transition-colors" />
+        <CaparazonSvg
+          class="[&_*]:transition-colors"
+          role="img"
+          aria-label="Caparazón Estudios"
+        />
       </div>
       <span class="font-bold tracking-tighter text-xl text-brand-text-main"
         >CAPARAZÓN ESTUDIOS</span
       >
-    </div>
+    </a>
 
     <div
       class="hidden md:flex items-center gap-8 text-sm font-medium text-brand-text-muted"
     >
-      <a href="#inicio" class="hover:text-brand-primary transition-colors"
-        >Inicio</a
+      <a
+        href="#inicio"
+        class="hover:text-brand-primary transition-colors"
+        aria-current="page">Inicio</a
       >
       <a href="#servicios" class="hover:text-brand-primary transition-colors"
         >Servicios</a
@@ -29,10 +38,13 @@ import CaparazonSvg from "../assets/caparazon.svg";
       >
     </div>
 
-    <button
-      class="cursor-pointer bg-brand-primary text-brand-surface px-5 py-2 rounded-xl font-bold text-sm hover:scale-105 transition-transform active:scale-95"
+    <a
+      href="#cotizar"
+      class="cursor-pointer bg-brand-primary text-brand-surface px-5 py-2 rounded-xl font-bold text-sm hover:scale-105 transition-transform active:scale-95 text-center md:text-left"
+      data-track-event="cta_click"
+      data-track-params='{"cta_location":"navbar","cta_text":"Cotizar Proyecto"}'
     >
       Cotizar Proyecto
-    </button>
+    </a>
   </div>
 </nav>

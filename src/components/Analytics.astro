@@ -1,0 +1,42 @@
+---
+interface Props {
+  gaId?: string;
+  searchConsoleVerification?: string;
+}
+
+const { gaId, searchConsoleVerification } = Astro.props;
+---
+
+{searchConsoleVerification && (
+  <meta name="google-site-verification" content={searchConsoleVerification} />
+)}
+
+{gaId && (
+  <>
+    <script
+      async
+      src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+      type="text/partytown"
+    ></script>
+    <script
+      is:inline
+      type="text/partytown"
+      define:vars={{ gaId }}
+      set:html={`
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '${gaId}', { send_page_view: true });
+
+        window.trackEvent = function(eventName, params) {
+          gtag('event', eventName, params || {});
+        };
+      `}
+    />
+  </>
+)}
+
+{!gaId && (
+  /* Analytics placeholder: añade tu Measurement ID de GA4 en Layout.astro */
+  null
+)}

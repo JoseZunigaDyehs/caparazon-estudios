@@ -1,0 +1,22 @@
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    document.body.addEventListener("click", (e) => {
+      const target = e.target.closest("[data-track-event]");
+      if (!target) return;
+
+      const eventName = target.dataset.trackEvent;
+      let params = {};
+      try {
+        params = target.dataset.trackParams
+          ? JSON.parse(target.dataset.trackParams)
+          : {};
+      } catch {
+        params = {};
+      }
+
+      if (typeof window.trackEvent === "function") {
+        window.trackEvent(eventName, params);
+      }
+    });
+  });
+</script>

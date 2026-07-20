@@ -1,4 +1,4 @@
-<section class="px-6 py-20" id="cotizar">
+<section class="px-6 pt-9" id="cotizar">
   <div class="max-w-6xl mx-auto text-center mb-16">
     <h2 class="text-4xl md:text-5xl font-bold mb-4">
       Inicia el Blindaje de tu Negocio
@@ -11,18 +11,27 @@
 
   <div class="max-w-4xl mx-auto">
     <div
-      class="bg-brand-card border border-brand-border rounded-[2.5rem] p-8 md:p-16 relative shadow-2xl"
+      class="bg-brand-card border border-brand-border rounded-[2.5rem] p-8 md:p-12 relative shadow-2xl"
       id="formulario-cotizacion"
     >
       <!-- Header con progreso -->
       <div id="wizard-header">
         <div class="flex items-center gap-4 mb-12">
-          <div class="flex-1 h-1.5 bg-brand-surface rounded-full overflow-hidden">
+          <div
+            class="flex-1 h-1.5 bg-brand-surface rounded-full overflow-hidden"
+            role="progressbar"
+            aria-valuemin="0"
+            aria-valuemax="5"
+            aria-valuenow="1"
+            aria-label="Progreso del formulario: paso 1 de 5"
+            id="progress-bar-container"
+          >
             <div
               class="h-full bg-brand-primary transition-all duration-300"
               id="progress-bar"
               style="width: 20%"
-            ></div>
+            >
+            </div>
           </div>
           <span
             class="text-[12px] font-mono text-brand-text-muted"
@@ -39,13 +48,14 @@
       </div>
 
       <!-- Contenido dinámico de los pasos -->
-      <div id="step-content" class="min-h-[280px]" aria-live="polite"></div>
+      <div id="step-content" class="min-h-[230px]" aria-live="polite"></div>
 
       <!-- Mensaje de error general -->
       <div
         id="error-general"
         class="hidden mt-6 p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-400 text-center text-sm"
-      ></div>
+      >
+      </div>
 
       <!-- Navegación -->
       <div
@@ -60,7 +70,8 @@
           Anterior
         </button>
         <button
-          type="button"
+          type="submit"
+          form="form-contacto"
           id="btn-siguiente"
           class="bg-brand-primary text-brand-surface px-10 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -73,7 +84,7 @@
             fill="none"
             stroke="currentColor"
             stroke-width="2.5"
-            ><path d="M5 12h14M12 5l7 7-7 7"></path></svg
+            aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"></path></svg
           >
         </button>
       </div>
@@ -90,6 +101,7 @@
             fill="none"
             stroke="currentColor"
             stroke-width="2.5"
+            aria-hidden="true"
           >
             <path d="M20 6L9 17l-5-5"></path>
           </svg>
@@ -188,7 +200,9 @@
   const API_URL = `${import.meta.env.PUBLIC_WORKER_API || ""}/api/cotizar`;
 
   if (!import.meta.env.PUBLIC_WORKER_API) {
-    console.warn("Formulario de cotización: PUBLIC_WORKER_API no está definida.");
+    console.warn(
+      "Formulario de cotización: PUBLIC_WORKER_API no está definida.",
+    );
   }
 
   const estadoInicial = {
@@ -212,6 +226,9 @@
 
   // Referencias DOM
   const progressBar = document.getElementById("progress-bar");
+  const progressBarContainer = document.getElementById(
+    "progress-bar-container",
+  );
   const stepCounter = document.getElementById("step-counter");
   const stepTitle = document.getElementById("step-title");
   const stepContent = document.getElementById("step-content");
@@ -252,14 +269,14 @@
           <button
             type="button"
             data-value="${escapeHtml(opt.value)}"
-            class="opcion-pregunta bg-brand-surface border p-8 rounded-3xl text-left transition-all group active:scale-95 ${
+            class="opcion-pregunta bg-brand-surface border p-6 rounded-3xl text-left transition-all group active:scale-95 focus-visible:ring-2 focus-visible:ring-brand-primary/50 ${
               seleccionada === opt.value
                 ? "border-brand-primary bg-brand-primary/10"
                 : "border-brand-border hover:border-brand-primary hover:bg-brand-primary/5"
             }"
             aria-pressed="${seleccionada === opt.value}"
           >
-            <span class="block text-lg font-bold ${seleccionada === opt.value ? "text-brand-primary" : "text-brand-text-main group-hover:text-brand-primary"} transition-colors">
+            <span class="block ${seleccionada === opt.value ? "text-brand-primary font-bold" : "text-brand-text-main group-hover:text-brand-primary"} transition-colors">
               ${escapeHtml(opt.label)}
             </span>
           </button>
@@ -270,15 +287,13 @@
       <div id="error-paso" class="hidden mt-4 text-center text-sm text-red-400"></div>
     `;
 
-    stepContent
-      .querySelectorAll(".opcion-pregunta")
-      .forEach((btn) => {
-        btn.addEventListener("click", () => {
-          estado.respuestas[paso.id] = btn.dataset.value;
-          renderizarPaso();
-          limpiarErrorPaso();
-        });
+    stepContent.querySelectorAll(".opcion-pregunta").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        estado.respuestas[paso.id] = btn.dataset.value;
+        renderizarPaso();
+        limpiarErrorPaso();
       });
+    });
   }
 
   function renderizarPasoContacto() {
@@ -294,10 +309,12 @@
             name="nombre"
             value="${escapeHtml(estado.contacto.nombre)}"
             placeholder="Tu nombre"
-            class="bg-brand-surface border border-brand-border rounded-2xl px-5 py-4 text-brand-text-main placeholder:text-brand-text-muted/50 focus:outline-none focus:border-brand-primary transition-colors"
+            class="bg-brand-surface border border-brand-border rounded-2xl px-5 py-4 text-brand-text-main placeholder:text-brand-text-muted/50 focus:outline-none focus:border-brand-primary transition-colors focus-visible:ring-2 focus-visible:ring-brand-primary/50"
             required
+            aria-invalid="false"
+            aria-describedby="error-nombre"
           />
-          <p class="error-campo hidden text-sm text-red-400"></p>
+          <p id="error-nombre" class="error-campo hidden text-sm text-red-400"></p>
         </div>
 
         <div class="flex flex-col gap-2">
@@ -308,10 +325,12 @@
             name="negocio"
             value="${escapeHtml(estado.contacto.negocio)}"
             placeholder="Nombre de tu negocio"
-            class="bg-brand-surface border border-brand-border rounded-2xl px-5 py-4 text-brand-text-main placeholder:text-brand-text-muted/50 focus:outline-none focus:border-brand-primary transition-colors"
+            class="bg-brand-surface border border-brand-border rounded-2xl px-5 py-4 text-brand-text-main placeholder:text-brand-text-muted/50 focus:outline-none focus:border-brand-primary transition-colors focus-visible:ring-2 focus-visible:ring-brand-primary/50"
             required
+            aria-invalid="false"
+            aria-describedby="error-negocio"
           />
-          <p class="error-campo hidden text-sm text-red-400"></p>
+          <p id="error-negocio" class="error-campo hidden text-sm text-red-400"></p>
         </div>
 
         <div class="flex flex-col gap-2">
@@ -322,10 +341,12 @@
             name="whatsapp"
             value="${escapeHtml(estado.contacto.whatsapp)}"
             placeholder="+56 9 1234 5678"
-            class="bg-brand-surface border border-brand-border rounded-2xl px-5 py-4 text-brand-text-main placeholder:text-brand-text-muted/50 focus:outline-none focus:border-brand-primary transition-colors"
+            class="bg-brand-surface border border-brand-border rounded-2xl px-5 py-4 text-brand-text-main placeholder:text-brand-text-muted/50 focus:outline-none focus:border-brand-primary transition-colors focus-visible:ring-2 focus-visible:ring-brand-primary/50"
             required
+            aria-invalid="false"
+            aria-describedby="error-whatsapp"
           />
-          <p class="error-campo hidden text-sm text-red-400"></p>
+          <p id="error-whatsapp" class="error-campo hidden text-sm text-red-400"></p>
         </div>
 
         <div class="flex flex-col gap-2">
@@ -336,10 +357,12 @@
             name="correo"
             value="${escapeHtml(estado.contacto.correo)}"
             placeholder="hola@tunegocio.cl"
-            class="bg-brand-surface border border-brand-border rounded-2xl px-5 py-4 text-brand-text-main placeholder:text-brand-text-muted/50 focus:outline-none focus:border-brand-primary transition-colors"
+            class="bg-brand-surface border border-brand-border rounded-2xl px-5 py-4 text-brand-text-main placeholder:text-brand-text-muted/50 focus:outline-none focus:border-brand-primary transition-colors focus-visible:ring-2 focus-visible:ring-brand-primary/50"
             required
+            aria-invalid="false"
+            aria-describedby="error-correo"
           />
-          <p class="error-campo hidden text-sm text-red-400"></p>
+          <p id="error-correo" class="error-campo hidden text-sm text-red-400"></p>
         </div>
       </form>
     `;
@@ -352,12 +375,26 @@
       }
       limpiarErrorCampo(target);
     });
+
+    formContacto.addEventListener("submit", (e) => {
+      e.preventDefault();
+      avanzar(e);
+    });
   }
 
   function actualizarProgreso() {
-    const porcentaje = ((estado.pasoActual + 1) / 5) * 100;
+    const paso = estado.pasoActual + 1;
+    const porcentaje = (paso / 5) * 100;
     progressBar.style.width = `${porcentaje}%`;
-    stepCounter.textContent = `STEP_0${estado.pasoActual + 1} / 05`;
+    stepCounter.textContent = `STEP_0${paso} / 05`;
+
+    if (progressBarContainer) {
+      progressBarContainer.setAttribute("aria-valuenow", String(paso));
+      progressBarContainer.setAttribute(
+        "aria-label",
+        `Progreso del formulario: paso ${paso} de 5`,
+      );
+    }
   }
 
   function actualizarNavegacion() {
@@ -421,7 +458,7 @@
         mostrarErrorCampo(
           input,
           errorEl,
-          "Ingresa un número de WhatsApp válido."
+          "Ingresa un número de WhatsApp válido.",
         );
         valido = false;
         return;
@@ -461,6 +498,7 @@
   function mostrarErrorCampo(input, errorEl, mensaje) {
     input.classList.add("border-red-500", "focus:border-red-500");
     input.classList.remove("border-brand-border", "focus:border-brand-primary");
+    input.setAttribute("aria-invalid", "true");
     errorEl.textContent = mensaje;
     errorEl.classList.remove("hidden");
   }
@@ -468,6 +506,7 @@
   function limpiarErrorCampo(input) {
     input.classList.remove("border-red-500", "focus:border-red-500");
     input.classList.add("border-brand-border", "focus:border-brand-primary");
+    input.setAttribute("aria-invalid", "false");
 
     const contenedor = input.closest("div");
     if (contenedor) {
@@ -489,7 +528,8 @@
     errorGeneral.classList.add("hidden");
   }
 
-  async function avanzar() {
+  async function avanzar(event) {
+    if (event) event.preventDefault();
     if (!validarPasoActual()) return;
 
     if (estado.pasoActual < 4) {
@@ -531,8 +571,17 @@
 
       if (!response.ok) {
         throw new Error(
-          data.error || "Ocurrió un error al enviar la cotización."
+          data.error || "Ocurrió un error al enviar la cotización.",
         );
+      }
+
+      if (typeof window.trackEvent === "function") {
+        window.trackEvent("generate_lead", {
+          currency: "CLP",
+          value: estado.respuestas.inversion || "no especificado",
+          event_category: "cotizacion",
+          event_label: estado.respuestas.objetivo || "general",
+        });
       }
 
       mostrarExito();
@@ -541,7 +590,7 @@
       actualizarNavegacion();
       mostrarErrorGeneral(
         err.message ||
-          "No pudimos enviar tu cotización. Inténtalo de nuevo más tarde."
+          "No pudimos enviar tu cotización. Inténtalo de nuevo más tarde.",
       );
     }
   }

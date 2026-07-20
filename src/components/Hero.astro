@@ -1,10 +1,10 @@
-<section id="inicio" class="relative pt-40 pb-20 px-6 overflow-hidden">
+<section id="inicio" class="relative pt-40 pb-12 md:pb-20 px-6 overflow-hidden">
   <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
     <div>
-      <!-- <div
+      <div
         class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-card border border-brand-border text-[12px] font-mono tracking-widest text-brand-primary mb-6 uppercase"
       >
-        <span class="relative flex h-2 w-2">
+        <span class="relative flex h-2 w-2" aria-hidden="true">
           <span
             class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-primary opacity-75"
           ></span>
@@ -13,7 +13,7 @@
           ></span>
         </span>
         Ingeniería Web de Élite
-      </div> -->
+      </div>
 
       <h1
         class="text-3xl md:text-5xl font-bold leading-[1.1] tracking-tight mb-6"
@@ -30,8 +30,11 @@
       </p>
 
       <div class="flex flex-wrap gap-4">
-        <button
+        <a
+          href="#cotizar"
           class="cursor-pointer bg-brand-primary text-brand-surface px-8 py-4 rounded-xl font-bold text-lg flex items-center gap-2 hover:shadow-[0_0_20px_rgba(0,196,159,0.3)] transition-all"
+          data-track-event="cta_click"
+          data-track-params='{"cta_location":"hero_primary","cta_text":"Cotizar mi Proyecto"}'
         >
           Cotizar mi Proyecto
           <svg
@@ -40,18 +43,22 @@
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
+            aria-hidden="true"
             ><path
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2.5"
               d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg
           >
-        </button>
-        <button
+        </a>
+        <a
+          href="#casos"
           class="cursor-pointer border border-brand-border text-brand-text-main px-8 py-4 rounded-xl font-bold text-lg hover:bg-brand-card transition-colors"
+          data-track-event="cta_click"
+          data-track-params='{"cta_location":"hero_secondary","cta_text":"Explorar Casos"}'
         >
           Explorar Casos
-        </button>
+        </a>
       </div>
 
       <div
@@ -94,8 +101,16 @@
       >
         <div class="flex justify-between items-start mb-12">
           <div class="space-y-1">
-            <div class="h-1 w-12 bg-brand-border rounded-full"></div>
-            <div class="h-1 w-8 bg-brand-border rounded-full"></div>
+            <div
+              class="h-1 w-12 bg-brand-border rounded-full"
+              aria-hidden="true"
+            >
+            </div>
+            <div
+              class="h-1 w-8 bg-brand-border rounded-full"
+              aria-hidden="true"
+            >
+            </div>
           </div>
           <div
             class="px-4 py-2 bg-brand-primary/10 border border-brand-primary/20 rounded-xl"
@@ -123,6 +138,7 @@
                   fill="none"
                   stroke="currentColor"
                   stroke-width="2"
+                  aria-hidden="true"
                   ><path
                     d="M21 12V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h7"
                   ></path><path d="M16 5V3"></path><path d="M8 5V3"></path><path
@@ -134,12 +150,16 @@
                 >ESTADO: ACTIVO</span
               >
             </div>
-            <div class="w-2 h-2 rounded-full bg-brand-primary animate-pulse">
+            <div
+              class="w-2 h-2 rounded-full bg-brand-primary animate-pulse"
+              aria-hidden="true"
+            >
             </div>
           </div>
 
           <div
             class="p-4 bg-brand-surface border border-brand-border rounded-xl"
+            aria-hidden="true"
           >
             <div
               class="h-1.5 w-full bg-brand-card rounded-full overflow-hidden"
@@ -152,7 +172,7 @@
           </div>
           <span
             class="text-[9px] font-mono text-brand-text-muted mt-2 block tracking-widest uppercase"
-            >Procesamiento Estructurado</span
+            aria-hidden="true">Procesamiento Estructurado</span
           >
         </div>
       </div>

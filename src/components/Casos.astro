@@ -1,52 +1,67 @@
 ---
+import { Image } from "astro:assets";
+import umbralImg from "../assets/cases/umbral-pv-sushi.jpg";
+import n4nImg from "../assets/cases/n4nchile.jpg";
+import endopartsImg from "../assets/cases/endoparts.jpg";
+
 const proyectos = [
   {
     cat: "GASTRONOMÍA / DELIVERY PREMIUM",
     title: "Umbral PV Sushi",
     desc: "E-commerce headless optimizado para alta demanda con validación de stock en tiempo real y flujo de pedidos automatizado directo a central telefónica.",
-    img: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=800&auto=format&fit=crop",
+    img: umbralImg,
+    alt: "E-commerce Umbral PV Sushi: tienda online de delivery premium con alto rendimiento en móvil.",
   },
   {
     cat: "E-COMMERCE DE ALTO RENDIMIENTO",
     title: "n4nchile",
     desc: "Tienda online de velocidad extrema con pasarela de pagos (Flow.cl) integrada en el Edge mediante Cloudflare Workers. Arquitectura flexible con Feature Flags.",
-    img: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=800&auto=format&fit=crop",
+    img: n4nImg,
+    alt: "Tienda online n4nchile: e-commerce headless con Flow.cl integrado en el Edge y Core Web Vitals en verde.",
   },
   {
     cat: "EVOLUCIÓN DE ARQUITECTURA B2B",
     title: "Endoparts",
     desc: "Migración integral de una plataforma médica a arquitectura estática en Astro. Enfoque en la experiencia B2B de marcas, arriendos y servicios técnicos.",
-    img: "https://images.unsplash.com/photo-1516549655169-df83a0774514?q=80&w=800&auto=format&fit=crop",
+    img: endopartsImg,
+    alt: "Plataforma B2B Endoparts: migración a Astro estático para catálogo médico y servicios técnicos.",
   },
 ];
 ---
 
-<section id="casos" class="px-6">
+<section id="casos" class="px-6 pt-4 md:pt-0">
   <div class="max-w-6xl mx-auto">
-    <div class="mb-16">
-      <h2
-        class="text-[12px] font-mono text-brand-primary tracking-[0.3em] uppercase mb-4"
+    <div class="mb-12 md:mb-16">
+      <span
+        class="block text-[12px] font-mono text-brand-primary tracking-[0.3em] uppercase mb-4"
       >
         Proyectos Reales
-      </h2>
-      <h3 class="text-4xl font-bold">Casos Seleccionados.</h3>
+      </span>
+      <h2 class="text-4xl font-bold">Casos Seleccionados.</h2>
     </div>
 
     <div class="grid md:grid-cols-3 gap-6">
       {
         proyectos.map((p) => (
           <div class="group relative bg-brand-card border border-brand-border rounded-3xl overflow-hidden aspect-[3/4]">
-            <img
+            <Image
               src={p.img}
-              alt={p.title}
+              alt={p.alt}
+              width={400}
+              height={267}
+              widths={[400, 800]}
+              sizes="(max-width: 768px) 100vw, 33vw"
+              format="webp"
+              loading="lazy"
+              decoding="async"
               class="absolute inset-0 w-full h-full object-cover opacity-20 grayscale group-hover:opacity-40 group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110"
             />
             <div class="absolute inset-0 bg-gradient-to-t from-brand-surface via-brand-surface/50 to-transparent p-8 flex flex-col justify-end">
               <span class="text-[12px] font-mono text-brand-primary tracking-[0.2em] mb-2 uppercase">
                 {p.cat}
               </span>
-              <h4 class="text-2xl font-bold mb-3">{p.title}</h4>
-              <p class="text-sm text-brand-text-muted leading-relaxed opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">
+              <h3 class="text-2xl font-bold mb-3">{p.title}</h3>
+              <p class="text-sm text-brand-text-muted leading-relaxed">
                 {p.desc}
               </p>
             </div>

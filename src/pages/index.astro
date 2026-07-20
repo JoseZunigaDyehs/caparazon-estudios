@@ -7,13 +7,157 @@ import Servicios from "../components/Servicios.astro";
 import Casos from "../components/Casos.astro";
 import Formulario from "../components/Formulario.astro";
 import Footer from "../components/Footer.astro";
+import Resultados from "../components/Resultados.astro";
+import Schema from "../components/Schema.astro";
+
+const siteUrl =
+  Astro.site?.toString().replace(/\/$/, "") ?? "https://caparazonestudios.com";
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Caparazón Estudios",
+  url: `${siteUrl}/`,
+  logo: `${siteUrl}/favicon.svg`,
+  sameAs: [],
+  contactPoint: {
+    "@type": "ContactPoint",
+    contactType: "Customer Service",
+    areaServed: "CL",
+    availableLanguage: ["Spanish"],
+  },
+};
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Caparazón Estudios",
+  url: `${siteUrl}/`,
+  inLanguage: "es-CL",
+  description:
+    "E-commerce y catálogos headless de alto rendimiento. Arquitectura web resiliente, rápida e inmune.",
+};
+
+const localBusinessSchema = {
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  name: "Caparazón Estudios",
+  url: `${siteUrl}/`,
+  image: `${siteUrl}/og-image.png`,
+  address: {
+    "@type": "PostalAddress",
+    addressCountry: "CL",
+  },
+  areaServed: {
+    "@type": "Country",
+    name: "Chile",
+  },
+  serviceType: "Desarrollo web de alto rendimiento",
+};
+
+const serviceSchemas = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    provider: { "@id": `${siteUrl}/#organization` },
+    serviceType: "E-commerce Headless",
+    areaServed: "CL",
+    description:
+      "Tiendas online rápidas, seguras y estables con pasarelas de pago integradas en el Edge para una latencia mínima.",
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    provider: { "@id": `${siteUrl}/#organization` },
+    serviceType: "Catálogos y Cotizadores B2B",
+    areaServed: "CL",
+    description:
+      "Plataformas corporativas autoadministrables para exhibir stock técnico sin intermediarios, optimizadas para SEO industrial.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "¿Qué es un e-commerce headless y por qué es mejor que una tienda tradicional?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Un e-commerce headless separa el frontend visual del backend administrativo. Esto permite cargas ultrarrápidas, mayor seguridad, escalabilidad y libertad para integrar cualquier pasarela de pago o catálogo sin depender de plantillas pesadas.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "¿Cuánto cuesta desarrollar una tienda online o catálogo B2B con Caparazón Estudios?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Los proyectos parten desde planes de catálogo corporativo y escalan según la cantidad de productos, integraciones y funcionalidades. Puedes completar el formulario de cotización para recibir una propuesta personalizada en 24 horas hábiles.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "¿Cuánto tiempo toma implementar un proyecto de e-commerce headless?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "La mayoría de los catálogos corporativos están listos entre 2 y 4 semanas. Los e-commerce headless con pasarelas de pago, stock en tiempo real y flujos personalizados suelen entregarse entre 4 y 8 semanas, dependiendo de la data y aprobaciones del cliente.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "¿Por qué usar Astro en lugar de WordPress o Shopify tradicional?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Astro genera sitios estáticos que cargan en milisegundos, reducen los costos de hosting y eliminan la superficie de ataque de bases de datos expuestas. WordPress puede seguir usándose como panel administrativo mientras el frontend público es ultra rápido y seguro.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "¿Qué incluye el servicio de catálogo B2B para empresas industriales?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Incluye una plataforma autoadministrable para exhibir stock técnico, generación de cotizaciones, descarga de fichas técnicas en PDF, integración con el ERP o Excel del cliente y optimización SEO para captar tráfico industrial cualificado.",
+      },
+    },
+  ],
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Inicio",
+      item: `${siteUrl}/`,
+    },
+  ],
+};
 ---
 
-<Layout title="Caparazón Estudios | Ingeniería Web de Élite">
-  <main class="bg-brand-surface text-brand-text-main font-sans selection:bg-brand-primary/30">
+<Layout
+  title="Caparazón Estudios | E-commerce Headless y Catálogos B2B en Chile"
+>
+  <Schema
+    schemas={[
+      { ...organizationSchema, "@id": `${siteUrl}/#organization` },
+      websiteSchema,
+      localBusinessSchema,
+      ...serviceSchemas,
+      faqSchema,
+      breadcrumbSchema,
+    ]}
+  />
+  <main
+    id="main-content"
+    class="bg-brand-surface text-brand-text-main font-sans selection:bg-brand-primary/30"
+  >
     <Navbar />
     <Hero />
-    <div class="space-y-32 pb-32">
+    <Resultados />
+    <div class="space-y-12 md:space-y-32">
       <Diagnostico />
       <Servicios />
       <Casos />

@@ -21,6 +21,10 @@ Gestión del server: `astro dev stop`, `astro dev status`, `astro dev logs`.
 
 Consultar `DESIGN_SYSTEM.md` para colores hex, tipografía, estilo visual y convenciones de компоненты.
 
+## Planes de SEO y Accesibilidad
+
+Consultar `SEO_AUDIT_PLANES.md` para el roadmap de mejoras SEO/a11y. Antes de implementar cualquier plan numerado, leer dicho archivo.
+
 ## Documentación
 
 - [Astro docs](https://docs.astro.build)
