@@ -1,0 +1,46 @@
+---
+interface Props {
+  canGoBack: boolean;
+  isLastStep: boolean;
+  isSubmitting: boolean;
+}
+
+const { canGoBack, isLastStep, isSubmitting } = Astro.props;
+const nextLabel = isLastStep
+  ? isSubmitting
+    ? "Enviando..."
+    : "Enviar cotización"
+  : "Siguiente Paso";
+---
+
+<div class="mt-12 flex flex-col sm:flex-row justify-center gap-4" data-wizard-nav>
+  <button
+    type="button"
+    data-wizard-prev
+    class:list={[
+      "bg-brand-surface border border-brand-border text-brand-text-main px-10 py-4 rounded-2xl font-bold hover:border-brand-primary transition-colors",
+      { hidden: !canGoBack },
+    ]}
+  >
+    Anterior
+  </button>
+  <button
+    type="button"
+    data-wizard-next
+    disabled={isSubmitting}
+    class="bg-brand-primary text-brand-surface px-10 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
+  >
+    <span data-wizard-next-text>{nextLabel}</span>
+    <svg
+      data-wizard-next-icon
+      xmlns="http://www.w3.org/2000/svg"
+      class:list={["w-5 h-5", { hidden: isLastStep }]}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.5"
+      aria-hidden="true"
+      ><path d="M5 12h14M12 5l7 7-7 7"></path></svg
+    >
+  </button>
+</div>

@@ -1,0 +1,53 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import Navbar from "@/components/Navbar.astro";
+import Footer from "@/components/Footer.astro";
+import HeroCaso from "@/components/casos/HeroCaso.astro";
+import ProblemSolution from "@/components/casos/ProblemSolution.astro";
+import VisualContent from "@/components/casos/VisualContent.astro";
+import Metrics from "@/components/casos/Metrics.astro";
+import CaseGallery from "@/components/casos/CaseGallery.astro";
+import Advertising from "@/components/casos/Advertising.astro";
+
+export async function getStaticPaths() {
+  const casos = await getCollection("casos");
+  return casos.map((caso) => ({
+    params: { slug: caso.id },
+    props: { caso },
+  }));
+}
+
+interface Props {
+  caso: CollectionEntry<"casos">;
+}
+
+const { caso } = Astro.props;
+const data = caso.data;
+---
+
+<Layout title={data.title} description={data.description} image={data.image}>
+  <main class="bg-brand-surface text-brand-text-main pt-32">
+    <Navbar />
+    <HeroCaso
+      title={data.title.split(" | ")[0]}
+      subtitle={data.subtitle}
+      status={data.status}
+      meta={data.meta}
+      visual={data.visual}
+    />
+
+    <div class="space-y-12 md:space-y-32 mt-16 pb-16 md:pb-32 px-6 md:px-0">
+      <ProblemSolution problem={data.problem} solution={data.solution} />
+      <VisualContent visual={data.visual} />
+      <Metrics metrics={data.metrics} />
+      {
+        data.screenshots && data.screenshots.length > 0 && (
+          <CaseGallery screenshots={data.screenshots} />
+        )
+      }
+      <Advertising />
+    </div>
+    <Footer />
+  </main>
+</Layout>

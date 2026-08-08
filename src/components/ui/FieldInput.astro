@@ -1,0 +1,51 @@
+---
+interface Props {
+  id: string;
+  name: string;
+  label: string;
+  type: string;
+  placeholder: string;
+  value?: string;
+  required?: boolean;
+  errorId?: string;
+  hasError?: boolean;
+}
+
+const {
+  id,
+  name,
+  label,
+  type,
+  placeholder,
+  value = "",
+  required = false,
+  errorId,
+  hasError = false,
+} = Astro.props;
+---
+
+<div class="flex flex-col gap-2">
+  <label
+    for={id}
+    class="text-[12px] font-mono text-brand-text-muted uppercase tracking-wider"
+  >
+    {label}
+  </label>
+  <input
+    type={type}
+    id={id}
+    name={name}
+    value={value}
+    placeholder={placeholder}
+    class:list={[
+      "bg-brand-surface border rounded-2xl px-5 py-4 text-brand-text-main placeholder:text-brand-text-muted/50 focus:outline-none transition-colors focus-visible:ring-2",
+      hasError
+        ? "border-red-500 focus:border-red-500 focus-visible:ring-red-500/50"
+        : "border-brand-border focus:border-brand-primary focus-visible:ring-brand-primary/50",
+    ]}
+    required={required}
+    aria-invalid={hasError ? "true" : "false"}
+    aria-describedby={errorId}
+  />
+  <p id={errorId} class="error-campo hidden text-sm text-red-400"></p>
+</div>

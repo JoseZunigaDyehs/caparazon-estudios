@@ -1,0 +1,33 @@
+---
+interface Props {
+  currentStep: number;
+  totalSteps: number;
+}
+
+const { currentStep, totalSteps } = Astro.props;
+const percentage = (currentStep / totalSteps) * 100;
+const stepNumber = currentStep.toString().padStart(2, "0");
+const totalNumber = totalSteps.toString().padStart(2, "0");
+---
+
+<div class="flex items-center gap-4 mb-12">
+  <div
+    class="flex-1 h-1.5 bg-brand-surface rounded-full overflow-hidden"
+    role="progressbar"
+    aria-valuemin="0"
+    aria-valuemax={totalSteps}
+    aria-valuenow={currentStep}
+    aria-label={`Progreso del formulario: paso ${currentStep} de ${totalSteps}`}
+    data-wizard-progress
+  >
+    <div
+      class="h-full bg-brand-primary transition-all duration-300"
+      data-wizard-progress-bar
+      style={`width: ${percentage}%`}
+    >
+    </div>
+  </div>
+  <span class="text-[12px] font-mono text-brand-text-muted" data-wizard-step-counter>
+    STEP_{stepNumber} / {totalNumber}
+  </span>
+</div>

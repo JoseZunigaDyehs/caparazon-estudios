@@ -1,0 +1,60 @@
+---
+import type { WizardStep } from "../../types/wizard";
+
+interface Props {
+  step: WizardStep;
+  selectedValue?: string;
+  isActive: boolean;
+  index: number;
+}
+
+const { step, selectedValue = "", isActive, index } = Astro.props;
+---
+
+<div
+  class:list={["wizard-step", { hidden: !isActive }]}
+  data-step-index={index}
+  aria-hidden={!isActive}
+>
+  <div
+    class="grid sm:grid-cols-2 gap-4"
+    role="group"
+    aria-label={step.question}
+  >
+    {
+      step.options.map((option) => {
+        const isSelected = selectedValue === option.value;
+        return (
+          <button
+            type="button"
+            data-step-id={step.id}
+            data-value={option.value}
+            class:list={[
+              "opcion-pregunta border p-6 rounded-3xl text-left transition-all group active:scale-95 focus-visible:ring-2 focus-visible:ring-brand-primary/50",
+              isSelected
+                ? "border-brand-primary bg-brand-primary/10"
+                : "bg-brand-surface border-brand-border hover:border-brand-primary hover:bg-brand-primary/5",
+            ]}
+            aria-pressed={isSelected ? "true" : "false"}
+          >
+            <span
+              class:list={[
+                "block transition-colors",
+                isSelected
+                  ? "text-brand-primary font-bold"
+                  : "text-brand-text-main group-hover:text-brand-primary",
+              ]}
+            >
+              {option.label}
+            </span>
+          </button>
+        );
+      })
+    }
+  </div>
+  <p
+    class="error-paso hidden mt-4 text-center text-sm text-red-400"
+    data-step-error
+  >
+  </p>
+</div>

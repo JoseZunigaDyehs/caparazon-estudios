@@ -1,0 +1,36 @@
+---
+interface Props {
+  title: string;
+  message: string;
+  resetLabel: string;
+}
+
+const { title, message, resetLabel } = Astro.props;
+---
+
+<div class="hidden text-center py-12" data-wizard-success>
+  <div
+    class="w-20 h-20 bg-brand-primary/10 rounded-full flex items-center justify-center mx-auto mb-6"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="w-10 h-10 text-brand-primary"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.5"
+      aria-hidden="true"
+    >
+      <path d="M20 6L9 17l-5-5"></path>
+    </svg>
+  </div>
+  <h3 class="text-3xl font-bold mb-4">{title}</h3>
+  <p class="text-brand-text-muted mb-8 max-w-md mx-auto">{message}</p>
+  <button
+    type="button"
+    data-wizard-reset
+    class="bg-brand-primary text-brand-surface px-10 py-4 rounded-2xl font-bold hover:scale-105 transition-transform"
+  >
+    {resetLabel}
+  </button>
+</div>

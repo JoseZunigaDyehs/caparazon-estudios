@@ -1,0 +1,67 @@
+---
+import { Image, type ImageMetadata } from "astro:assets";
+interface Props {
+  title: string;
+  subtitle: string;
+  status: string;
+  meta: { label: string; value: string; highlight?: boolean }[];
+  visual: { image?: ImageMetadata; imageAlt?: string };
+}
+const { title, subtitle, status, meta, visual } = Astro.props;
+---
+
+<header class="max-w-6xl mx-auto flex flex-col-reverse md:flex-row">
+  <div class="w-full md:w-1/2 mt-4 md:mt-0">
+    <Image
+      src={visual.image}
+      alt={visual.imageAlt ?? "Captura del proyecto"}
+      width={750}
+      widths={[400, 600, 750]}
+      sizes={"(max-width: 640px) 90vw, 384px"}
+      format="webp"
+      class="w-full h-auto"
+    />
+  </div>
+  <div class="flex flex-col items-baseline justify-center">
+    <div class="px-6">
+      <div
+        class="inline-flex items-center px-3 py-1 rounded-full bg-brand-card border border-brand-border text-[10px] font-mono tracking-widest text-brand-text-muted mb-4 md:mb-8 uppercase"
+      >
+        {status}
+      </div>
+
+      <h1
+        class="text-3xl md:text-5xl font-bold leading-tight tracking-tight mb-2"
+      >
+        {title}
+      </h1>
+
+      <p
+        class="text-lg text-brand-text-muted leading-relaxed max-w-3xl mb-8 md:mb-16"
+      >
+        {subtitle}
+      </p>
+    </div>
+
+    <div class="px-2 md:px-0">
+      <div
+        class="grid grid-cols-2 md:grid-cols-4 border border-brand-border rounded-3xl overflow-hidden"
+      >
+        {
+          meta.map((item) => (
+            <div class="p-4 md:p-8 border-b md:border-b-0 md:border-r border-brand-border last:border-0 bg-brand-card/10">
+              <span class="block text-sm font-mono text-brand-primary uppercase tracking-widest mb-0 md:mb-2">
+                {item.label}
+              </span>
+              <span
+                class={`text-sm md:text-base font-medium leading-relaxed ${item.highlight ? "text-brand-primary" : "text-brand-text-main"}`}
+              >
+                {item.value}
+              </span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</header>

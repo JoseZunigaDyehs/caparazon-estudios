@@ -1,32 +1,37 @@
 ---
 import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
+import type { ImageMetadata } from "astro:assets";
 import umbralImg from "../assets/cases/umbral-pv-sushi.jpg";
 import n4nImg from "../assets/cases/n4nchile.jpg";
 import endopartsImg from "../assets/cases/endoparts.jpg";
 
-const proyectos = [
-  {
-    cat: "GASTRONOMÍA / DELIVERY PREMIUM",
-    title: "Umbral PV Sushi",
-    desc: "E-commerce headless optimizado para alta demanda con validación de stock en tiempo real y flujo de pedidos automatizado directo a central telefónica.",
-    img: umbralImg,
-    alt: "E-commerce Umbral PV Sushi: tienda online de delivery premium con alto rendimiento en móvil.",
-  },
-  {
-    cat: "E-COMMERCE DE ALTO RENDIMIENTO",
-    title: "n4nchile",
-    desc: "Tienda online de velocidad extrema con pasarela de pagos (Flow.cl) integrada en el Edge mediante Cloudflare Workers. Arquitectura flexible con Feature Flags.",
-    img: n4nImg,
-    alt: "Tienda online n4nchile: e-commerce headless con Flow.cl integrado en el Edge y Core Web Vitals en verde.",
-  },
-  {
-    cat: "EVOLUCIÓN DE ARQUITECTURA B2B",
-    title: "Endoparts",
-    desc: "Migración integral de una plataforma médica a arquitectura estática en Astro. Enfoque en la experiencia B2B de marcas, arriendos y servicios técnicos.",
-    img: endopartsImg,
-    alt: "Plataforma B2B Endoparts: migración a Astro estático para catálogo médico y servicios técnicos.",
-  },
-];
+const coverImages: Record<string, ImageMetadata> = {
+  "umbral-pv-sushi": umbralImg,
+  n4nchile: n4nImg,
+  endoparts: endopartsImg,
+};
+
+const coverAlt: Record<string, string> = {
+  "umbral-pv-sushi":
+    "E-commerce Umbral PV Sushi: tienda online de delivery premium con alto rendimiento en móvil.",
+  n4nchile:
+    "Tienda online n4nchile: e-commerce headless con Flow.cl integrado en el Edge y Core Web Vitals en verde.",
+  endoparts:
+    "Plataforma B2B Endoparts: migración a Astro estático para catálogo médico y servicios técnicos.",
+};
+
+const proyectos = (await getCollection("casos"))
+  .filter((p) => p.id in coverImages)
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((p) => ({
+    slug: p.id,
+    cat: p.data.category,
+    title: p.data.title.split(" | ")[0],
+    desc: p.data.summary,
+    img: coverImages[p.id],
+    alt: coverAlt[p.id],
+  }));
 ---
 
 <section id="casos" class="px-6 pt-4 md:pt-0">
@@ -43,7 +48,10 @@ const proyectos = [
     <div class="grid md:grid-cols-3 gap-6">
       {
         proyectos.map((p) => (
-          <div class="group relative bg-brand-card border border-brand-border rounded-3xl overflow-hidden aspect-[3/4]">
+          <a
+            href={`/casos/${p.slug}`}
+            class="group relative bg-brand-card border border-brand-border rounded-3xl overflow-hidden aspect-[3/4]"
+          >
             <Image
               src={p.img}
               alt={p.alt}
@@ -65,7 +73,7 @@ const proyectos = [
                 {p.desc}
               </p>
             </div>
-          </div>
+          </a>
         ))
       }
     </div>

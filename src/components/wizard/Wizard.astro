@@ -1,0 +1,424 @@
+---
+import type { WizardStep, ContactField } from "../../types/wizard";
+import StepProgress from "./StepProgress.astro";
+import QuestionStep from "./QuestionStep.astro";
+import ContactStep from "./ContactStep.astro";
+import StepNavigation from "./StepNavigation.astro";
+import SuccessStep from "./SuccessStep.astro";
+
+interface Props {
+  steps: WizardStep[];
+  contactFields: ContactField[];
+  totalSteps: number;
+  successTitle: string;
+  successMessage: string;
+  resetLabel: string;
+}
+
+const {
+  steps,
+  contactFields,
+  totalSteps,
+  successTitle,
+  successMessage,
+  resetLabel,
+} = Astro.props;
+
+const contactValues = Object.fromEntries(
+  contactFields.map((field) => [field.name, ""]),
+);
+---
+
+<div
+  class="bg-brand-card border border-brand-border rounded-[2.5rem] p-8 md:p-12 relative shadow-2xl"
+  data-wizard-root
+>
+  <script
+    type="application/json"
+    data-wizard-config
+    set:html={JSON.stringify({ steps, contactFields, totalSteps })}></script>
+
+  <div data-wizard-header>
+    <StepProgress currentStep={1} totalSteps={totalSteps} />
+    <h3
+      class="text-2xl md:text-3xl font-bold text-center mb-12"
+      data-wizard-title
+    >
+      {steps[0]?.question}
+    </h3>
+  </div>
+
+  <div data-wizard-steps class="min-h-[230px]" aria-live="polite">
+    {
+      steps.map((step, index) => (
+        <QuestionStep step={step} index={index} isActive={index === 0} />
+      ))
+    }
+    <ContactStep
+      fields={contactFields}
+      values={contactValues}
+      index={steps.length}
+      isActive={false}
+    />
+  </div>
+
+  <div
+    data-wizard-error
+    class="hidden mt-6 p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-400 text-center text-sm"
+  >
+  </div>
+
+  <StepNavigation canGoBack={false} isLastStep={false} isSubmitting={false} />
+
+  <SuccessStep title={successTitle} message={successMessage} resetLabel={resetLabel} />
+</div>
+
+<script>
+  import { validateField } from "../../lib/validation";
+  import type { WizardConfig, WizardPayload } from "../../types/wizard";
+
+  interface WizardState {
+    currentStep: number;
+    answers: Record<string, string>;
+    contact: Record<string, string>;
+    isSubmitting: boolean;
+  }
+
+  const roots = document.querySelectorAll<HTMLElement>("[data-wizard-root]");
+
+  roots.forEach((root) => {
+    const configEl = root.querySelector<HTMLScriptElement>(
+      "[data-wizard-config]",
+    );
+    if (!configEl) return;
+
+    const config: WizardConfig = JSON.parse(configEl.textContent || "{}");
+
+    const header = root.querySelector<HTMLElement>("[data-wizard-header]");
+    const titleEl = root.querySelector<HTMLElement>("[data-wizard-title]");
+    const stepsContainer = root.querySelector<HTMLElement>("[data-wizard-steps]");
+    const progressBar = root.querySelector<HTMLElement>(
+      "[data-wizard-progress-bar]",
+    );
+    const progressContainer = root.querySelector<HTMLElement>(
+      "[data-wizard-progress]",
+    );
+    const stepCounter = root.querySelector<HTMLElement>(
+      "[data-wizard-step-counter]",
+    );
+    const errorGeneral = root.querySelector<HTMLElement>("[data-wizard-error]");
+    const nav = root.querySelector<HTMLElement>("[data-wizard-nav]");
+    const prevBtn = root.querySelector<HTMLButtonElement>("[data-wizard-prev]");
+    const nextBtn = root.querySelector<HTMLButtonElement>("[data-wizard-next]");
+    const nextText = root.querySelector<HTMLElement>("[data-wizard-next-text]");
+    const nextIcon = root.querySelector<HTMLElement>("[data-wizard-next-icon]");
+    const successEl = root.querySelector<HTMLElement>("[data-wizard-success]");
+    const resetBtn = root.querySelector<HTMLButtonElement>("[data-wizard-reset]");
+
+    if (
+      !header ||
+      !titleEl ||
+      !stepsContainer ||
+      !progressBar ||
+      !progressContainer ||
+      !stepCounter ||
+      !errorGeneral ||
+      !nav ||
+      !prevBtn ||
+      !nextBtn ||
+      !nextText ||
+      !nextIcon ||
+      !successEl ||
+      !resetBtn
+    ) {
+      return;
+    }
+
+    const initialContact = Object.fromEntries(
+      config.contactFields.map((field) => [field.name, ""]),
+    );
+
+    let state: WizardState = {
+      currentStep: 0,
+      answers: {},
+      contact: { ...initialContact },
+      isSubmitting: false,
+    };
+
+    function updateQuestionSelection(stepId: string, selectedValue: string) {
+      const activeStep = stepsContainer.querySelector<HTMLElement>(
+        `[data-step-index="${state.currentStep}"]`,
+      );
+      if (!activeStep) return;
+
+      activeStep
+        .querySelectorAll<HTMLElement>("[data-step-id][data-value]")
+        .forEach((btn) => {
+          const isSelected = btn.dataset.value === selectedValue;
+          const span = btn.querySelector("span");
+
+          btn.setAttribute("aria-pressed", String(isSelected));
+          btn.classList.toggle("border-brand-primary", isSelected);
+          btn.classList.toggle("bg-brand-primary/10", isSelected);
+          btn.classList.toggle("border-brand-border", !isSelected);
+          btn.classList.toggle("bg-brand-surface", !isSelected);
+          btn.classList.toggle("hover:border-brand-primary", !isSelected);
+          btn.classList.toggle("hover:bg-brand-primary/5", !isSelected);
+
+          if (span) {
+            span.classList.toggle("text-brand-primary", isSelected);
+            span.classList.toggle("font-bold", isSelected);
+            span.classList.toggle("text-brand-text-main", !isSelected);
+            span.classList.toggle("group-hover:text-brand-primary", !isSelected);
+          }
+        });
+    }
+
+    function render() {
+      clearErrors();
+
+      if (state.currentStep < config.steps.length) {
+        titleEl.textContent = config.steps[state.currentStep].question;
+      } else {
+        titleEl.textContent = "Datos de contacto";
+      }
+
+      stepsContainer.querySelectorAll<HTMLElement>("[data-step-index]").forEach((el) => {
+        const index = Number(el.dataset.stepIndex);
+        const isActive = index === state.currentStep;
+        el.classList.toggle("hidden", !isActive);
+        el.setAttribute("aria-hidden", String(!isActive));
+      });
+
+      if (state.currentStep < config.steps.length) {
+        const stepId = config.steps[state.currentStep].id;
+        updateQuestionSelection(stepId, state.answers[stepId] || "");
+      }
+
+      const currentStepNumber = state.currentStep + 1;
+      const percentage = (currentStepNumber / config.totalSteps) * 100;
+      progressBar.style.width = `${percentage}%`;
+      stepCounter.textContent = `STEP_${String(currentStepNumber).padStart(2, "0")} / ${String(config.totalSteps).padStart(2, "0")}`;
+      progressContainer.setAttribute("aria-valuenow", String(currentStepNumber));
+      progressContainer.setAttribute(
+        "aria-label",
+        `Progreso del formulario: paso ${currentStepNumber} de ${config.totalSteps}`,
+      );
+
+      prevBtn.classList.toggle("hidden", state.currentStep === 0);
+
+      const isLastStep = state.currentStep === config.totalSteps - 1;
+      nextText.textContent = isLastStep
+        ? state.isSubmitting
+          ? "Enviando..."
+          : "Enviar cotización"
+        : "Siguiente Paso";
+      nextIcon.classList.toggle("hidden", isLastStep);
+      nextBtn.disabled = state.isSubmitting;
+    }
+
+    function showStepError(message: string) {
+      const activeStep = stepsContainer.querySelector<HTMLElement>(
+        `[data-step-index="${state.currentStep}"]`,
+      );
+      const errorEl = activeStep?.querySelector<HTMLElement>("[data-step-error]");
+      if (errorEl) {
+        errorEl.textContent = message;
+        errorEl.classList.remove("hidden");
+      }
+    }
+
+    function clearStepError() {
+      const activeStep = stepsContainer.querySelector<HTMLElement>(
+        `[data-step-index="${state.currentStep}"]`,
+      );
+      const errorEl = activeStep?.querySelector<HTMLElement>("[data-step-error]");
+      if (errorEl) {
+        errorEl.textContent = "";
+        errorEl.classList.add("hidden");
+      }
+    }
+
+    function showFieldError(input: HTMLInputElement, message: string) {
+      input.classList.add("border-red-500");
+      input.classList.remove("border-brand-border");
+      input.setAttribute("aria-invalid", "true");
+
+      const container = input.closest<HTMLElement>("div");
+      const errorEl = container?.querySelector<HTMLElement>(".error-campo");
+      if (errorEl) {
+        errorEl.textContent = message;
+        errorEl.classList.remove("hidden");
+      }
+    }
+
+    function clearFieldError(input: HTMLInputElement) {
+      input.classList.remove("border-red-500");
+      input.classList.add("border-brand-border");
+      input.setAttribute("aria-invalid", "false");
+
+      const container = input.closest<HTMLElement>("div");
+      const errorEl = container?.querySelector<HTMLElement>(".error-campo");
+      if (errorEl) {
+        errorEl.textContent = "";
+        errorEl.classList.add("hidden");
+      }
+    }
+
+    function clearErrors() {
+      errorGeneral.textContent = "";
+      errorGeneral.classList.add("hidden");
+      clearStepError();
+
+      config.contactFields.forEach((field) => {
+        const input = document.getElementById(field.id) as HTMLInputElement | null;
+        if (input) clearFieldError(input);
+      });
+    }
+
+    function validateCurrentStep(): boolean {
+      if (state.currentStep < config.steps.length) {
+        const step = config.steps[state.currentStep];
+        if (!state.answers[step.id]) {
+          showStepError("Selecciona una opción para continuar.");
+          return false;
+        }
+        return true;
+      }
+
+      return validateContact();
+    }
+
+    function validateContact(): boolean {
+      let valid = true;
+
+      config.contactFields.forEach((field) => {
+        const input = document.getElementById(field.id) as HTMLInputElement | null;
+        if (!input) return;
+
+        const error = validateField(input.value, field.validators);
+        if (error) {
+          showFieldError(input, error);
+          valid = false;
+        }
+      });
+
+      return valid;
+    }
+
+    function advance() {
+      if (!validateCurrentStep()) return;
+
+      if (state.currentStep < config.steps.length) {
+        state.currentStep++;
+        render();
+        return;
+      }
+
+      submit();
+    }
+
+    function goBack() {
+      if (state.currentStep > 0) {
+        state.currentStep--;
+        render();
+      }
+    }
+
+    function submit() {
+      state.isSubmitting = true;
+      render();
+
+      const payload: WizardPayload = {
+        ...state.answers,
+        ...state.contact,
+      };
+
+      const event = new CustomEvent<WizardPayload>("wizard:submit", {
+        detail: payload,
+        bubbles: true,
+        cancelable: true,
+      });
+
+      // Emitir asíncronamente para dar tiempo a los listeners a registrarse
+      queueMicrotask(() => root.dispatchEvent(event));
+    }
+
+    function showSuccess() {
+      state.isSubmitting = false;
+      header.classList.add("hidden");
+      stepsContainer.classList.add("hidden");
+      nav.classList.add("hidden");
+      errorGeneral.classList.add("hidden");
+      successEl.classList.remove("hidden");
+    }
+
+    function showError(message: string) {
+      state.isSubmitting = false;
+      errorGeneral.textContent = message;
+      errorGeneral.classList.remove("hidden");
+      render();
+    }
+
+    function reset() {
+      state = {
+        currentStep: 0,
+        answers: {},
+        contact: { ...initialContact },
+        isSubmitting: false,
+      };
+
+      const form = root.querySelector<HTMLFormElement>("#form-contacto");
+      if (form) form.reset();
+
+      header.classList.remove("hidden");
+      stepsContainer.classList.remove("hidden");
+      nav.classList.remove("hidden");
+      successEl.classList.add("hidden");
+
+      clearErrors();
+      render();
+    }
+
+    function bindEvents() {
+      stepsContainer.addEventListener("click", (e) => {
+        const btn = (e.target as HTMLElement).closest<HTMLElement>(
+          "[data-step-id][data-value]",
+        );
+        if (!btn) return;
+
+        const stepId = btn.dataset.stepId;
+        const value = btn.dataset.value;
+        if (!stepId || !value) return;
+
+        state.answers[stepId] = value;
+        clearStepError();
+        render();
+      });
+
+      const form = root.querySelector<HTMLFormElement>("#form-contacto");
+      if (form) {
+        form.addEventListener("input", (e) => {
+          const target = e.target as HTMLInputElement;
+          if (target.name in state.contact) {
+            state.contact[target.name] = target.value;
+          }
+          clearFieldError(target);
+        });
+      }
+
+      prevBtn.addEventListener("click", goBack);
+      nextBtn.addEventListener("click", advance);
+      resetBtn.addEventListener("click", reset);
+
+      root.addEventListener("wizard:success", () => showSuccess());
+      root.addEventListener("wizard:error", (e: Event) => {
+        const message = (e as CustomEvent<string>).detail;
+        showError(message || "Ocurrió un error. Inténtalo de nuevo.");
+      });
+    }
+
+    bindEvents();
+    render();
+  });
+</script>

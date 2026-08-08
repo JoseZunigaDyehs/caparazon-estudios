@@ -1,0 +1,37 @@
+---
+import type { ContactField } from "../../types/wizard";
+import FieldInput from "../ui/FieldInput.astro";
+
+interface Props {
+  fields: ContactField[];
+  values: Record<string, string>;
+  isActive: boolean;
+  index: number;
+}
+
+const { fields, values, isActive, index } = Astro.props;
+---
+
+<div
+  class:list={["wizard-step", { hidden: !isActive }]}
+  data-step-index={index}
+  aria-hidden={!isActive}
+>
+  <form id="form-contacto" class="grid sm:grid-cols-2 gap-6" novalidate>
+    {
+      fields.map((field) => (
+        <FieldInput
+          id={field.id}
+          name={field.name}
+          label={field.label}
+          type={field.type}
+          placeholder={field.placeholder}
+          value={values[field.name] || ""}
+          required={field.required}
+          errorId={`error-${field.id}`}
+          hasError={false}
+        />
+      ))
+    }
+  </form>
+</div>

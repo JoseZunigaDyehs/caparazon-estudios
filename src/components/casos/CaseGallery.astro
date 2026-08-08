@@ -1,0 +1,214 @@
+---
+import { Image, type ImageMetadata } from "astro:assets";
+
+interface Props {
+  screenshots: {
+    src: ImageMetadata;
+    alt: string;
+    device?: "desktop" | "mobile";
+    caption?: string;
+  }[];
+}
+
+const { screenshots } = Astro.props;
+---
+
+<section class="max-w-6xl mx-auto px-4 py-12">
+  <div class="flex items-center justify-between mb-8">
+    <div>
+      <h2 class="text-xs font-mono text-[#00C49F] uppercase tracking-[0.3em] mb-1">
+        Pantallas del proyecto
+      </h2>
+    </div>
+
+    <!-- Controles de navegación (Desktop + Mobile) -->
+    <div class="flex items-center gap-3">
+      <button
+        id="prevBtn"
+        aria-label="Imagen anterior"
+        class="w-11 h-11 rounded-full border border-[#334155] bg-[#1E293B]/80 text-[#F8FAFC] flex items-center justify-center hover:bg-[#00C49F] hover:text-[#0A0E17] hover:border-[#00C49F] transition-all duration-300 disabled:opacity-30 disabled:pointer-events-none group"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-transform group-hover:-translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+
+      <button
+        id="nextBtn"
+        aria-label="Siguiente imagen"
+        class="w-11 h-11 rounded-full border border-[#334155] bg-[#1E293B]/80 text-[#F8FAFC] flex items-center justify-center hover:bg-[#00C49F] hover:text-[#0A0E17] hover:border-[#00C49F] transition-all duration-300 disabled:opacity-30 disabled:pointer-events-none group"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Contenedor principal del Carrusel -->
+  <div class="relative group">
+    <div
+      id="carouselTrack"
+      class="flex gap-6 overflow-x-auto scrollbar-none snap-x snap-mandatory scroll-smooth pb-6 pt-2 px-1"
+      style="scrollbar-width: none; -ms-overflow-style: none;"
+    >
+      {
+        screenshots.map((shot, index) => {
+          const isMobile = shot.device === "mobile";
+          return (
+            <div
+              data-carousel-item
+              class={`snap-center shrink-0 flex flex-col justify-between transition-all duration-300 ${
+                isMobile
+                  ? "w-[280px] sm:w-[320px]"
+                  : "w-[85vw] sm:w-[600px] md:w-[750px] lg:w-[850px]"
+              }`}
+            >
+              <!-- Contenedor del Mockup / Marco -->
+              <div class="relative rounded-2xl border border-[#334155] bg-[#0A0E17] overflow-hidden shadow-2xl transition-all duration-300 group-hover:border-[#334155]/80 flex items-center justify-center p-2 sm:p-4 min-h-[380px] sm:min-h-[460px]">
+                
+                <!-- Badge de Dispositivo -->
+                <div class="absolute top-4 left-4 z-10 px-2.5 py-1 rounded-full bg-[#1E293B]/90 border border-[#334155] backdrop-blur-md flex items-center gap-1.5 text-[10px] font-mono text-[#94A3B8] uppercase">
+                  <span class={`w-1.5 h-1.5 rounded-full ${isMobile ? "bg-[#00C49F]" : "bg-blue-400"}`}></span>
+                  {isMobile ? "Mobile View" : "Desktop View"}
+                </div>
+
+                <!-- Imagen optimizada por Astro -->
+                <div class={`w-full h-full flex items-center justify-center ${isMobile ? "max-w-[280px]" : "w-full"}`}>
+                  <Image
+                    src={shot.src}
+                    alt={shot.alt}
+                    width={isMobile ? 750 : 1440}
+                    widths={isMobile ? [400, 600, 750] : [600, 900, 1440]}
+                    sizes={
+                      isMobile
+                        ? "(max-width: 768px) 280px, 320px"
+                        : "(max-width: 768px) 85vw, 850px"
+                    }
+                    format="webp"
+                    class={`h-auto object-contain transition-transform duration-500 rounded-lg ${
+                      isMobile ? "max-h-[500px]" : "w-full max-h-[520px]"
+                    }`}
+                  />
+                </div>
+              </div>
+
+              <!-- Pie de foto / Capción -->
+              {(shot.caption || shot.alt) && (
+                <div class="mt-4 text-center px-2">
+                  <p class="text-xs font-mono text-[#94A3B8] tracking-wide line-clamp-2">
+                    <span class="text-[#00C49F]">[{index + 1}/{screenshots.length}]</span> {shot.caption || shot.alt}
+                  </p>
+                </div>
+              )}
+            </div>
+          );
+        })
+      }
+    </div>
+  </div>
+
+  <!-- Indicadores de posición (Dots) -->
+  <div class="flex justify-center items-center gap-2 mt-4" id="carouselDots">
+    {
+      screenshots.map((_, index) => (
+        <button
+          data-dot-index={index}
+          aria-label={`Ir a la diapositiva ${index + 1}`}
+          class="w-2.5 h-2.5 rounded-full bg-[#334155] transition-all duration-300 hover:bg-[#00C49F]"
+        ></button>
+      ))
+    }
+  </div>
+</section>
+
+<script>
+  function setupCarousel() {
+    const track = document.getElementById("carouselTrack") as HTMLDivElement | null;
+    const prevBtn = document.getElementById("prevBtn") as HTMLButtonElement | null;
+    const nextBtn = document.getElementById("nextBtn") as HTMLButtonElement | null;
+    const dots = document.querySelectorAll("[data-dot-index]");
+    const items = document.querySelectorAll("[data-carousel-item]");
+
+    if (!track || !prevBtn || !nextBtn || items.length === 0) return;
+
+    // Actualiza botones e indicadores según el scroll
+    const updateControls = () => {
+      const scrollLeft = track.scrollLeft;
+      const maxScroll = track.scrollWidth - track.clientWidth;
+
+      // Estado de botones
+      prevBtn.disabled = scrollLeft <= 10;
+      nextBtn.disabled = scrollLeft >= maxScroll - 10;
+
+      // Detectar ítem activo en pantalla
+      let activeIndex = 0;
+      let minDistance = Infinity;
+
+      items.forEach((item, index) => {
+        const rect = item.getBoundingClientRect();
+        const trackRect = track.getBoundingClientRect();
+        const distance = Math.abs((rect.left + rect.width / 2) - (trackRect.left + trackRect.width / 2));
+        
+        if (distance < minDistance) {
+          minDistance = distance;
+          activeIndex = index;
+        }
+      });
+
+      // Actualizar dots
+      dots.forEach((dot, index) => {
+        if (index === activeIndex) {
+          dot.classList.add("bg-[#00C49F]", "w-8");
+          dot.classList.remove("bg-[#334155]", "w-2.5");
+        } else {
+          dot.classList.add("bg-[#334155]", "w-2.5");
+          dot.classList.remove("bg-[#00C49F]", "w-8");
+        }
+      });
+    };
+
+    // Navegación con flechas
+    nextBtn.addEventListener("click", () => {
+      const firstItem = items[0] as HTMLElement;
+      const itemWidth = firstItem ? firstItem.offsetWidth + 24 : 350; // 24px es el gap
+      track.scrollBy({ left: itemWidth, behavior: "smooth" });
+    });
+
+    prevBtn.addEventListener("click", () => {
+      const firstItem = items[0] as HTMLElement;
+      const itemWidth = firstItem ? firstItem.offsetWidth + 24 : 350;
+      track.scrollBy({ left: -itemWidth, behavior: "smooth" });
+    });
+
+    // Navegación con dots
+    dots.forEach((dot) => {
+      dot.addEventListener("click", (e) => {
+        const target = e.currentTarget as HTMLElement;
+        const index = parseInt(target.getAttribute("data-dot-index") || "0");
+        const targetItem = items[index] as HTMLElement;
+
+        if (targetItem) {
+          targetItem.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+        }
+      });
+    });
+
+    track.addEventListener("scroll", updateControls, { passive: true });
+    window.addEventListener("resize", updateControls, { passive: true });
+    
+    // Inicializar estado
+    updateControls();
+  }
+
+  // Soporte para Astro View Transitions
+  document.addEventListener("astro:page-load", setupCarousel);
+  setupCarousel();
+</script>
+
+<style>
+  /* Oculta la barra de scroll nativa para mantener un look ultra limpio */
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+</style>
