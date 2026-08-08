@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import 'tailwind-animations';
 
 /* Geist fonts from Vercel CDN */
 @font-face {

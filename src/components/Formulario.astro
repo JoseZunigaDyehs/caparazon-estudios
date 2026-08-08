@@ -7,16 +7,25 @@ const API_URL = `${import.meta.env.PUBLIC_WORKER_API || ""}/api/cotizar`;
 
 <section class="px-6 pt-9" id="cotizar">
   <div class="max-w-6xl mx-auto text-center mb-16">
-    <h2 class="text-4xl md:text-5xl font-bold mb-4">
+    <h2
+      class="text-4xl md:text-5xl font-bold mb-4
+    timeline-view animate-fade-in-up animate-range-[entry_100%_entry_800%]"
+    >
       Inicia el Blindaje de tu Negocio
     </h2>
-    <p class="text-brand-text-muted text-lg max-w-xl mx-auto">
+    <p
+      class="text-brand-text-muted text-lg max-w-xl mx-auto
+    timeline-view animate-fade-in-up animate-range-[entry_100%_entry_600%]"
+    >
       Responde 4 preguntas rápidas para evaluar la viabilidad técnica de tu
       proyecto.
     </p>
   </div>
 
-  <div class="max-w-4xl mx-auto">
+  <div
+    class="max-w-4xl mx-auto
+  timeline-view animate-fade-in-up animate-range-[entry_10%_entry_100%]"
+  >
     <Wizard
       steps={cotizacionSteps}
       contactFields={contactFields}
@@ -31,7 +40,10 @@ const API_URL = `${import.meta.env.PUBLIC_WORKER_API || ""}/api/cotizar`;
 <script>
   declare global {
     interface Window {
-      trackEvent?: (eventName: string, params?: Record<string, unknown>) => void;
+      trackEvent?: (
+        eventName: string,
+        params?: Record<string, unknown>,
+      ) => void;
     }
   }
 

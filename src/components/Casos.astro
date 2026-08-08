@@ -38,19 +38,26 @@ const proyectos = (await getCollection("casos"))
   <div class="max-w-6xl mx-auto">
     <div class="mb-12 md:mb-16">
       <span
-        class="block text-[12px] font-mono text-brand-primary tracking-[0.3em] uppercase mb-4"
+        class="block text-[12px] font-mono text-brand-primary tracking-[0.3em] uppercase mb-4
+        timeline-view animate-fade-in-up animate-range-[entry_100%_entry_800%]"
       >
         Proyectos Reales
       </span>
-      <h2 class="text-4xl font-bold">Casos Seleccionados.</h2>
+      <h2
+        class="text-4xl font-bold
+      timeline-view animate-fade-in-up animate-range-[entry_100%_entry_600%]"
+      >
+        Casos Seleccionados.
+      </h2>
     </div>
 
     <div class="grid md:grid-cols-3 gap-6">
       {
-        proyectos.map((p) => (
+        proyectos.map((p, index) => (
           <a
             href={`/casos/${p.slug}`}
-            class="group relative bg-brand-card border border-brand-border rounded-3xl overflow-hidden aspect-[3/4]"
+            class={`group relative bg-brand-card border border-brand-border rounded-3xl overflow-hidden aspect-[3/4]
+            timeline-view animate-fade-in-down animate-range-[entry_20%_entry_100%]`}
           >
             <Image
               src={p.img}
