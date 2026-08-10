@@ -58,6 +58,12 @@ const proyectos = (await getCollection("casos"))
             href={`/casos/${p.slug}`}
             class={`group relative bg-brand-card border border-brand-border rounded-3xl overflow-hidden aspect-[3/4]
             timeline-view animate-fade-in-down animate-range-[entry_20%_entry_100%]`}
+            data-track-event="case_click"
+            data-track-params={JSON.stringify({
+              case_name: p.title,
+              case_category: p.cat,
+              location: "cases_grid",
+            })}
           >
             <Image
               src={p.img}

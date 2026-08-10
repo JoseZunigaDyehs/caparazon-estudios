@@ -30,19 +30,30 @@ import CaparazonSvg from "../assets/caparazon.svg";
       </h2>
       <ul class="space-y-4 text-sm text-brand-text-muted">
         <li>
-          <a href="/#inicio" class="hover:text-brand-primary transition-colors"
+          <a
+            href="/#inicio"
+            class="hover:text-brand-primary transition-colors"
+            data-track-event="footer_click"
+            data-track-params='{"link":"inicio","location":"footer_sitemap"}'
             >Inicio</a
           >
         </li>
         <li>
-          <a href="/#casos" class="hover:text-brand-primary transition-colors"
+          <a
+            href="/#casos"
+            class="hover:text-brand-primary transition-colors"
+            data-track-event="footer_click"
+            data-track-params='{"link":"casos","location":"footer_sitemap"}'
             >Casos de Éxito</a
           >
         </li>
         <li>
           <a
             href="/#servicios"
-            class="hover:text-brand-primary transition-colors">Servicios</a
+            class="hover:text-brand-primary transition-colors"
+            data-track-event="footer_click"
+            data-track-params='{"link":"servicios","location":"footer_sitemap"}'
+            >Servicios</a
           >
         </li>
       </ul>
@@ -58,16 +69,27 @@ import CaparazonSvg from "../assets/caparazon.svg";
         <li>
           <a
             href="/privacidad"
-            class="hover:text-brand-primary transition-colors">Privacidad</a
+            class="hover:text-brand-primary transition-colors"
+            data-track-event="footer_click"
+            data-track-params='{"link":"privacidad","location":"footer_legal"}'
+            >Privacidad</a
           >
         </li>
         <li>
-          <a href="/terminos" class="hover:text-brand-primary transition-colors"
+          <a
+            href="/terminos"
+            class="hover:text-brand-primary transition-colors"
+            data-track-event="footer_click"
+            data-track-params='{"link":"terminos","location":"footer_legal"}'
             >Términos</a
           >
         </li>
         <li>
-          <a href="/#cotizar" class="hover:text-brand-primary transition-colors"
+          <a
+            href="/#cotizar"
+            class="hover:text-brand-primary transition-colors"
+            data-track-event="cta_click"
+            data-track-params='{"cta_location":"footer","cta_text":"Contacto"}'
             >Contacto</a
           >
         </li>
@@ -84,8 +106,10 @@ import CaparazonSvg from "../assets/caparazon.svg";
     <div class="flex gap-4">
       <a
         href="mailto:hola@caparazonestudios.com"
-        class="p-3.5 border border-brand-border rounded-lg hover:border-brand-primary transition-colors inline-flex"
+        class="p-4 border border-brand-border rounded-lg hover:border-brand-primary transition-colors inline-flex"
         aria-label="Enviar correo a Caparazón Estudios"
+        data-track-event="contact_click"
+        data-track-params='{"channel":"email","location":"footer"}'
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -103,8 +127,10 @@ import CaparazonSvg from "../assets/caparazon.svg";
         href="https://github.com/JoseZunigaDyehs"
         target="_blank"
         rel="noopener noreferrer"
-        class="p-3.5 border border-brand-border rounded-lg hover:border-brand-primary transition-colors inline-flex"
+        class="p-4 border border-brand-border rounded-lg hover:border-brand-primary transition-colors inline-flex"
         aria-label="GitHub de Caparazón Estudios"
+        data-track-event="social_click"
+        data-track-params='{"network":"github","location":"footer"}'
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

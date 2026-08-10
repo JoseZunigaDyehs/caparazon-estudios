@@ -4,7 +4,12 @@ interface Props {
   searchConsoleVerification?: string;
 }
 
-const { gaId, searchConsoleVerification } = Astro.props;
+const { gaId, searchConsoleVerification: rawVerification } = Astro.props;
+
+// Search Console a veces entrega el valor con prefijo; lo limpiamos por seguridad.
+const searchConsoleVerification = rawVerification
+  ?.replace(/^google-site-verification=\s*/, "")
+  .trim();
 ---
 
 {searchConsoleVerification && (
@@ -16,11 +21,9 @@ const { gaId, searchConsoleVerification } = Astro.props;
     <script
       async
       src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
-      type="text/partytown"
     ></script>
     <script
       is:inline
-      type="text/partytown"
       define:vars={{ gaId }}
       set:html={`
         window.dataLayer = window.dataLayer || [];

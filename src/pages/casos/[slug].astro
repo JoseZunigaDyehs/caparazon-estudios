@@ -9,6 +9,7 @@ import VisualContent from "@/components/casos/VisualContent.astro";
 import Metrics from "@/components/casos/Metrics.astro";
 import CaseGallery from "@/components/casos/CaseGallery.astro";
 import Advertising from "@/components/casos/Advertising.astro";
+import Schema from "@/components/Schema.astro";
 
 export async function getStaticPaths() {
   const casos = await getCollection("casos");
@@ -24,9 +25,70 @@ interface Props {
 
 const { caso } = Astro.props;
 const data = caso.data;
+
+const siteUrl =
+  Astro.site?.toString().replace(/\/$/, "") ?? "https://caparazonestudios.com";
+const pageUrl = new URL(Astro.url.pathname, siteUrl).toString();
+const caseName = data.title.split(" | ")[0];
+const caseImage = data.image
+  ? new URL(data.image, siteUrl).toString()
+  : `${siteUrl}/og-image.png`;
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": `${siteUrl}/#organization`,
+  name: "Caparazón Estudios",
+  url: `${siteUrl}/`,
+  logo: `${siteUrl}/favicon.svg`,
+  sameAs: ["https://github.com/JoseZunigaDyehs"],
+};
+
+const webPageSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": `${pageUrl}#webpage`,
+  url: pageUrl,
+  name: caseName,
+  description: data.description,
+  inLanguage: "es-CL",
+  isPartOf: { "@id": `${siteUrl}/#organization` },
+  primaryImageOfPage: {
+    "@type": "ImageObject",
+    url: caseImage,
+  },
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Inicio",
+      item: `${siteUrl}/`,
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Casos de éxito",
+      item: `${siteUrl}/#casos`,
+    },
+    {
+      "@type": "ListItem",
+      position: 3,
+      name: caseName,
+      item: pageUrl,
+    },
+  ],
+};
 ---
 
 <Layout title={data.title} description={data.description} image={data.image}>
+  <Schema
+    schemas={[organizationSchema, webPageSchema, breadcrumbSchema]}
+  />
   <main class="bg-brand-surface text-brand-text-main pt-32">
     <Navbar />
     <HeroCaso

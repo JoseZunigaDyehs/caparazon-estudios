@@ -2,7 +2,7 @@
 
 > Fecha: 2026-07-20
 > Auditor: Asistente SEO senior
-> Estado: **Planes 0, 1, 2, 3, 4 y 6 implementados** — Plan 5 pendiente
+> Estado: **Planes 0, 1, 2, 3, 4 y 6 implementados en código** — Plan 5 pendiente. Plan 6 requiere acciones externas (Search Console, GA4, monitoreo de keywords).
 
 Este documento es la referencia viva de mejoras SEO y accesibilidad (a11y) detectadas en el proyecto. Cuando se solicite _"implementar el Plan X"_, este archivo debe leerse primero para mantener coherencia y prioridad.
 

@@ -215,6 +215,16 @@ const contactValues = Object.fromEntries(
         : "Siguiente Paso";
       nextIcon.classList.toggle("hidden", isLastStep);
       nextBtn.disabled = state.isSubmitting;
+
+      // En el último paso el botón actúa como submit del formulario de contacto.
+      // Esto mejora la semántica y la navegación por teclado/lectores de pantalla.
+      if (isLastStep) {
+        nextBtn.type = "submit";
+        nextBtn.setAttribute("form", "form-contacto");
+      } else {
+        nextBtn.type = "button";
+        nextBtn.removeAttribute("form");
+      }
     }
 
     function showStepError(message: string) {
@@ -405,10 +415,20 @@ const contactValues = Object.fromEntries(
           }
           clearFieldError(target);
         });
+
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          advance();
+        });
       }
 
       prevBtn.addEventListener("click", goBack);
-      nextBtn.addEventListener("click", advance);
+      nextBtn.addEventListener("click", () => {
+        // En el último paso el botón es type="submit"; dejamos que el
+        // evento submit del formulario maneje el envío para evitar doble ejecución.
+        if (nextBtn.type === "submit") return;
+        advance();
+      });
       resetBtn.addEventListener("click", reset);
 
       root.addEventListener("wizard:success", () => showSuccess());

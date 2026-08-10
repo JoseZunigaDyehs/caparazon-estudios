@@ -69,14 +69,30 @@ El sitio ya dispara los siguientes eventos cuando GA4 está configurado:
 | `cta_click` | Clic en un CTA | Navbar "Cotizar Proyecto" |
 | `cta_click` | Clic en un CTA | Hero "Cotizar mi Proyecto" |
 | `cta_click` | Clic en un CTA | Hero "Explorar Casos" |
+| `cta_click` | Clic en un CTA | Footer "Contacto" |
+| `case_click` | Clic en una card de caso | Grid de Casos de Éxito |
+| `footer_click` | Clic en enlace del footer | Sitemap y legal del footer |
+| `contact_click` | Clic en correo | Icono email del footer |
+| `social_click` | Clic en red social | Icono GitHub del footer |
+| `whatsapp_click` | Clic en WhatsApp | Componente `<WhatsAppCTA />` (cuando se use) |
 | `generate_lead` | Envío exitoso del formulario | Wizard de cotización |
 
 ### Parámetros de `cta_click`
 
 ```json
 {
-  "cta_location": "navbar|hero_primary|hero_secondary",
-  "cta_text": "Cotizar Proyecto|Cotizar mi Proyecto|Explorar Casos"
+  "cta_location": "navbar|hero_primary|hero_secondary|footer",
+  "cta_text": "Cotizar Proyecto|Cotizar mi Proyecto|Explorar Casos|Contacto"
+}
+```
+
+### Parámetros de `case_click`
+
+```json
+{
+  "case_name": "Umbral PV Sushi",
+  "case_category": "GASTRONOMÍA / DELIVERY PREMIUM",
+  "location": "cases_grid"
 }
 ```
 
@@ -115,17 +131,23 @@ if (typeof window.trackEvent === "function") {
 
 ### Evento de WhatsApp
 
-Aunque actualmente no hay botón de WhatsApp, si se añade en el futuro puedes usar:
+Existe un componente preparado en `src/components/WhatsAppCTA.astro`. Úsalo cuando tengas un número oficial:
 
 ```astro
-<a
-  href="https://wa.me/569XXXXXXXX"
-  data-track-event="whatsapp_click"
-  data-track-params='{"location":"hero"}'
->
-  Escríbenos por WhatsApp
-</a>
+---
+import WhatsAppCTA from "@/components/WhatsAppCTA.astro";
+---
+
+<WhatsAppCTA
+  phone="+569XXXXXXXX"
+  message="Hola, vi su sitio web y quiero cotizar un proyecto."
+  label="Escríbenos por WhatsApp"
+  location="hero"
+  class="bg-brand-primary text-brand-surface px-6 py-3 rounded-xl font-bold"
+/>
 ```
+
+Esto genera automáticamente el enlace `wa.me` y dispara el evento `whatsapp_click`.
 
 ---
 
@@ -168,6 +190,7 @@ Revisa mensualmente la posición promedio de estas keywords en Google Search Con
 - [ ] Verificación de Search Console activa.
 - [ ] GA4 recibiendo datos de página vista.
 - [ ] Evento `cta_click` registrado al hacer clic en CTAs.
+- [ ] Evento `case_click` registrado al hacer clic en cards de casos.
 - [ ] Evento `generate_lead` registrado al enviar cotización.
 - [ ] Sitemap enviado en Search Console (`https://caparazonestudios.com/sitemap-index.xml`).
 - [ ] Primera medición de Core Web Vitals en Search Console (tarda unos días).

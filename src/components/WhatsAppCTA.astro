@@ -1,0 +1,35 @@
+---
+interface Props {
+  phone: string;
+  message?: string;
+  label?: string;
+  location?: string;
+  class?: string;
+}
+
+const {
+  phone,
+  message = "Hola, vi su sitio web y quiero cotizar un proyecto.",
+  label = "Escríbenos por WhatsApp",
+  location = "body",
+  class: className = "",
+} = Astro.props;
+
+const cleanPhone = phone.replace(/\D/g, "");
+const whatsappUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
+---
+
+{
+  cleanPhone && (
+    <a
+      href={whatsappUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class={className}
+      data-track-event="whatsapp_click"
+      data-track-params={JSON.stringify({ location })}
+    >
+      <slot>{label}</slot>
+    </a>
+  )
+}

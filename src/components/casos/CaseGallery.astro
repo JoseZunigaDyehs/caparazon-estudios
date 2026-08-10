@@ -25,21 +25,23 @@ const { screenshots } = Astro.props;
     <!-- Controles de navegación (Desktop + Mobile) -->
     <div class="flex items-center gap-3">
       <button
+        type="button"
         id="prevBtn"
         aria-label="Imagen anterior"
         class="w-11 h-11 rounded-full border border-[#334155] bg-[#1E293B]/80 text-[#F8FAFC] flex items-center justify-center hover:bg-[#00C49F] hover:text-[#0A0E17] hover:border-[#00C49F] transition-all duration-300 disabled:opacity-30 disabled:pointer-events-none group"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-transform group-hover:-translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-transform group-hover:-translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
         </svg>
       </button>
 
       <button
+        type="button"
         id="nextBtn"
         aria-label="Siguiente imagen"
         class="w-11 h-11 rounded-full border border-[#334155] bg-[#1E293B]/80 text-[#F8FAFC] flex items-center justify-center hover:bg-[#00C49F] hover:text-[#0A0E17] hover:border-[#00C49F] transition-all duration-300 disabled:opacity-30 disabled:pointer-events-none group"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
         </svg>
       </button>
@@ -87,6 +89,8 @@ const { screenshots } = Astro.props;
                         : "(max-width: 768px) 85vw, 850px"
                     }
                     format="webp"
+                    loading="lazy"
+                    decoding="async"
                     class={`h-auto object-contain transition-transform duration-500 rounded-lg ${
                       isMobile ? "max-h-[500px]" : "w-full max-h-[520px]"
                     }`}
@@ -114,10 +118,13 @@ const { screenshots } = Astro.props;
     {
       screenshots.map((_, index) => (
         <button
+          type="button"
           data-dot-index={index}
           aria-label={`Ir a la diapositiva ${index + 1}`}
-          class="w-2.5 h-2.5 rounded-full bg-[#334155] transition-all duration-300 hover:bg-[#00C49F]"
-        ></button>
+          class="p-4 -m-3 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00C49F] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0E17]"
+        >
+          <span class="block w-2.5 h-2.5 rounded-full bg-[#334155] transition-all duration-300 dot-indicator"></span>
+        </button>
       ))
     }
   </div>
@@ -159,12 +166,14 @@ const { screenshots } = Astro.props;
 
       // Actualizar dots
       dots.forEach((dot, index) => {
+        const indicator = dot.querySelector<HTMLElement>(".dot-indicator");
+        if (!indicator) return;
         if (index === activeIndex) {
-          dot.classList.add("bg-[#00C49F]", "w-8");
-          dot.classList.remove("bg-[#334155]", "w-2.5");
+          indicator.classList.add("bg-[#00C49F]", "w-8");
+          indicator.classList.remove("bg-[#334155]", "w-2.5");
         } else {
-          dot.classList.add("bg-[#334155]", "w-2.5");
-          dot.classList.remove("bg-[#00C49F]", "w-8");
+          indicator.classList.add("bg-[#334155]", "w-2.5");
+          indicator.classList.remove("bg-[#00C49F]", "w-8");
         }
       });
     };
